@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Calculadora VLSM Móvil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos generales */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #eef1f5;
+            color: #2c3e50;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease; /* Transición para modo oscuro */
+        }
+
+        /* Modo Oscuro */
+        body.dark-mode {
+            background: #2c3e50;
+            color: #ecf0f1;
+        }
+
+        body.dark-mode fieldset {
+            background: #34495e;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        body.dark-mode legend {
+            color: #61dafb; /* Un azul más claro para el modo oscuro */
+        }
+
+        body.dark-mode label {
+            color: #bdc3c7;
+        }
+
+        body.dark-mode input, body.dark-mode select {
+            background-color: #4a6572;
+            border-color: #5f7c8a;
+            color: #ecf0f1;
+        }
+
+        body.dark-mode input:focus, body.dark-mode select:focus {
+            border-color: #61dafb;
+            background: #5a7482;
+        }
+
+        body.dark-mode button {
+            background-color: #007acc; /* Mantener color principal para botones */
+            color: white; /* Asegurar que el texto del botón sea blanco */
+        }
+        body.dark-mode button:hover {
+            background-color: #005f99;
+        }
+        body.dark-mode button:active {
+            background-color: #004b80;
+        }
+
+        body.dark-mode .table-container {
+            background: #34495e;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-mode table {
+            border-color: #5f7c8a;
+        }
+
+        body.dark-mode th, body.dark-mode td {
+            border-color: #5f7c8a;
+        }
+
+        body.dark-mode th {
+            background-color: #4a6572;
+            color: #ecf0f1;
+        }
+
+        body.dark-mode tr:nth-child(even) td {
+            background-color: #405a66;
+        }
+
+        body.dark-mode tr:hover td {
+            background-color: #506f7c;
+        }
+
+        body.dark-mode .octet-boundary {
+            border-left-color: #61dafb; /* Color para modo oscuro */
+        }
+        body.dark-mode .download-buttons-container button {
+            background-color: #218838;
+        }
+        body.dark-mode .download-buttons-container button:hover {
+            background-color: #1e7e34;
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            margin-bottom: 24px;
+            text-align: center;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        fieldset {
+            border: none;
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 90%; /* Optimizado para escritorio */
+            min-width: 300px; /* Ancho mínimo para móviles */
+            max-width: 1200px; /* Límite para pantallas muy grandes */
+        }
+
+        legend {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #007acc;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-top: 16px;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        input:focus, select:focus {
+            border-color: #007acc;
+            outline: none;
+            background: #f0f8ff;
+        }
+
+        /* Estilo para validación de IP */
+        input.ip-valid {
+            border-color: #28a745; /* Verde para IP válida */
+        }
+        input.ip-invalid {
+            border-color: #dc3545; /* Rojo para IP inválida */
+        }
+
+
+        /* Estilo base para todos los botones */
+        button {
+            background-color: #007acc;
+            color: white;
+            font-weight: bold;
+            border: none;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex; /* Para alinear icono y texto */
+            align-items: center;
+            justify-content: center;
+            gap: 8px; /* Espacio entre icono y texto */
+        }
+
+        button:hover {
+            background-color: #005f99;
+        }
+
+        button:active {
+            background-color: #004b80;
+        }
+
+        .table-container {
+            display: none;
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+            margin-top: 20px; /* Espacio entre las tablas */
+            width: 100%;
+            max-width: 90%; /* Optimizado para escritorio */
+            min-width: 300px; /* Ancho mínimo para móviles */
+            max-width: 1200px; /* Límite para pantallas muy grandes */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover td {
+            background-color: #e8f4ff;
+        }
+
+        /* Estilos específicos para la tabla de proceso */
+        #processTableWrap h2 {
+            font-size: 1.5rem;
+            color: #34495e;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* Estilos para la nueva tabla de 24 bits */
+        #processTable24Bit th, #processTable24Bit td {
+            padding: 8px 4px; /* Ajusta el padding para que quepan más columnas */
+            font-size: 0.8rem;
+            white-space: nowrap; /* Evita que el texto se rompa */
+        }
+        #processTable24Bit thead th {
+            font-size: 0.75rem; /* Ajusta el tamaño de la fuente para los encabezados de potencias */
+        }
+
+        /* Clase para resaltar las columnas de límite de octeto */
+        .octet-boundary {
+            border-left: 2px solid #007acc; /* Borde más grueso y color, AHORA A LA IZQUIERDA */
+        }
+
+        /* Contenedor de botones de descarga */
+        .download-buttons-container {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .download-buttons-container button {
+            background-color: #28a745; /* Green for download */
+        }
+        .download-buttons-container button:hover {
+            background-color: #218838;
+        }
+        .download-buttons-container button:active {
+            background-color: #1e7e34;
+        }
+
+        /* Indicador de carga */
+        #loadingIndicator {
+            display: none; /* Hidden by default */
+            text-align: center;
+            margin-top: 20px;
+            font-style: italic;
+            color: #777;
+        }
+        body.dark-mode #loadingIndicator {
+            color: #bdc3c7;
+        }
+
+        /* Estilos para el botón de modo oscuro en la esquina superior derecha */
+        #darkModeToggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000; /* Asegura que esté por encima de otros elementos */
+            width: 40px; /* Tamaño fijo para el botón */
+            height: 40px;
+            border-radius: 50%; /* Botón redondo */
+            background-color: rgba(127, 140, 141, 0.2); /* Fondo sutil */
+            border: 1px solid rgba(127, 140, 141, 0.4);
+            padding: 0; /* Eliminar padding interno */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            color: #2c3e50; /* Color del icono en modo claro */
+        }
+
+        #darkModeToggle:hover {
+            background-color: rgba(127, 140, 141, 0.4);
+        }
+
+        body.dark-mode #darkModeToggle {
+            background-color: rgba(97, 218, 251, 0.2); /* Fondo sutil para modo oscuro */
+            border-color: rgba(97, 218, 251, 0.4);
+            color: #61dafb; /* Color del icono en modo oscuro */
+        }
+
+        body.dark-mode #darkModeToggle:hover {
+            background-color: rgba(97, 218, 251, 0.4);
+        }
+        #darkModeToggle span {
+            margin: 0; /* Eliminar margen del span dentro del botón */
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            input, select, button {
+                font-size: 0.95rem;
+            }
+
+            body {
+                padding: 15px;
+            }
+
+            fieldset, .table-container {
+                padding: 15px;
+                max-width: 100%; /* En móviles, usa todo el ancho disponible */
+            }
+
+            th, td {
+                padding: 8px;
+                font-size: 0.85rem;
+            }
+            #processTable24Bit th, #processTable24Bit td {
+                padding: 6px 2px;
+                font-size: 0.7rem;
+            }
+            #darkModeToggle {
+                top: 10px;
+                right: 10px;
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Calculadora de Subredes</h1>
+
+    <!-- Botón de modo oscuro movido a la esquina superior derecha -->
+    <button id="darkModeToggle">
+        <span data-lucide="moon"></span>
+    </button>
+
+    <fieldset>
+        <legend>Parámetros de Subred</legend>
+
+        <label for="ipBase">Dirección IP base</label>
+        <input type="text" id="ipBase" placeholder="Ej. 192.168.0.0" value="192.168.1.0">
+
+        <label for="clase">Clase de red</label>
+        <select id="clase">
+            <option value="A">A (/8)</option>
+            <option value="B">B (/16)</option>
+            <option value="C" selected>C (/24)</option>
+        </select>
+
+        <label for="numSubnets">Número de subredes (1–1000)</label>
+        <input type="number" id="numSubnets" min="1" max="1000" value="1">
+
+        <label for="hostsPerSubnet">Hosts requeridos por cada subred</label>
+        <input type="number" id="hostsPerSubnet" min="1" value="1">
+
+        <button id="calcBtn">
+            <span data-lucide="calculator"></span> Calcular
+        </button>
+        <button id="clearBtn" style="background: #e74c3c;">
+            <span data-lucide="trash-2"></span> Borrar
+        </button>
+    </fieldset>
+
+    <!-- Nueva tabla para el proceso de subneteo con formato de 24 bits -->
+    <div class="table-container" id="processTable24BitWrap">
+        <h2>Representación Binaria método Oscar</h2>
+        <table id="processTable24Bit">
+            <thead>
+                <tr id="powersOf2Row">
+                    <!-- Potencias de 2 generadas por JS -->
+                </tr>
+                <tr id="binaryMaskRow">
+                    <!-- Bits de la máscara binaria generados por JS -->
+                </tr>
+                <tr id="pNotationRow">
+                    <!-- Notación P generada por JS -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- No hay tbody dinámico para esta tabla, todo se genera en thead -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-container" id="tableWrap">
+        <h2>Resultados de Subneteo</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Subred</th>
+                    <th>Puerta de enlace</th>
+                    <th>1ª IP válida</th>
+                    <th>Última IP válida</th>
+                    <th>Broadcast</th>
+                    <th>Máscara</th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+                <!-- Contenido generado por JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="download-buttons-container">
+        <button id="downloadImagesBtn">
+            <span data-lucide="image"></span> Descargar Tablas como Imágenes
+        </button>
+        <button id="downloadXlsxBtn">
+            <span data-lucide="file-spreadsheet"></span> Descargar Tablas como Excel (XLSX)
+        </button>
+    </div>
+
+    <div id="loadingIndicator">Procesando...</div>
+    
+    <!-- Librería html2canvas para la descarga de imágenes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Librería SheetJS para la descarga de XLSX -->
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <!-- Lucide Icons CDN - MOVED TO END OF BODY -->
+    <script src="https://cdn.jsdelivr.net/npm/lucide-static@latest/lucide.min.js"></script>
+
+    <script>
+        // Helper function to get element by ID
+        const el = id => document.getElementById(id);
+
+        // Get DOM elements
+        const ipBaseInput = el("ipBase"); // Get reference to IP base input
+        const tableWrap = el("tableWrap");
+        const tbody = el("tbody");
+        const processTable24BitWrap = el("processTable24BitWrap");
+        const powersOf2Row = el("powersOf2Row");
+        const binaryMaskRow = el("binaryMaskRow");
+        const pNotationRow = el("pNotationRow");
+        const clearBtn = el("clearBtn");
+        const downloadImagesBtn = el("downloadImagesBtn");
+        const downloadXlsxBtn = el("downloadXlsxBtn");
+        const darkModeToggle = el("darkModeToggle");
+        const loadingIndicator = el("loadingIndicator");
+
+        /**
+         * Displays an error message to the user.
+         * Errors will now only be logged to the console.
+         * @param {string} message - The error message to display.
+         */
+        function showError(message) {
+            console.error("Error:", message);
+            // No UI display for errors as per request
+        }
+
+        /**
+         * Displays a success message to the user.
+         * Success messages will now only be logged to the console.
+         * @param {string} message - The success message to display.
+         */
+        function showSuccess(message) {
+            console.log("Éxito:", message);
+            // No UI display for success as per request
+        }
+
+        /**
+         * Shows the loading indicator.
+         * @param {string} message - The message to display in the loading indicator.
+         */
+        function showLoading(message = "Procesando...") {
+            loadingIndicator.textContent = message;
+            loadingIndicator.style.display = "block";
+        }
+
+        /**
+         * Hides the loading indicator.
+         */
+        function hideLoading() {
+            loadingIndicator.style.display = "none";
+        }
+
+        /**
+         * Validates an IPv4 address string.
+         * @param {string} ip - The IP address string (e.g., "192.168.1.1").
+         * @returns {boolean} True if the IP is valid, false otherwise.
+         */
+        function isValidIp(ip) {
+            const parts = ip.trim().split(".");
+            if (parts.length !== 4) return false;
+            for (const part of parts) {
+                const num = parseInt(part);
+                if (isNaN(num) || num < 0 || num > 255) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /**
+         * Performs instant visual validation of the IP base input field.
+         */
+        function validateIpInput() {
+            const ip = ipBaseInput.value;
+            if (isValidIp(ip)) {
+                ipBaseInput.classList.remove('ip-invalid');
+                ipBaseInput.classList.add('ip-valid');
+            } else {
+                ipBaseInput.classList.remove('ip-valid');
+                ipBaseInput.classList.add('ip-invalid');
+            }
+        }
+
+        /**
+         * Converts an IPv4 address string to its 32-bit unsigned integer representation.
+         * @param {string} ip - The IP address string (e.g., "192.168.1.1").
+         * @returns {number} The 32-bit integer representation of the IP.
+         * @throws {Error} If the IP address is invalid.
+         */
+        function ipToLong(ip) {
+            if (!isValidIp(ip)) {
+                throw new Error("IP inválida");
+            }
+            const parts = ip.trim().split(".");
+            return parts.reduce((acc, val, i) => acc + (parseInt(val) << ((3 - i) * 8)), 0) >>> 0;
+        }
+
+        /**
+         * Converts a 32-bit unsigned integer to an IPv4 address string.
+         * @param {number} num - The 32-bit integer representation of the IP.
+         * @returns {string} The IP address string (e.g., "192.168.1.1").
+         */
+        function longToIp(num) {
+            // Extract each octet from the 32-bit integer.
+            return [24, 16, 8, 0].map(shift => (num >>> shift) & 0xFF).join(".");
+        }
+
+        /**
+         * Converts a CIDR prefix length to a dotted decimal subnet mask.
+         * @param {number} prefix - The CIDR prefix length (e.g., 24).
+         * @returns {string} The subnet mask in dotted decimal format (e.g., "255.255.255.0").
+         */
+        function prefixToMask(prefix) {
+            const mask = [];
+            let tempPrefix = prefix;
+            for (let i = 0; i < 4; i++) {
+                const bits = Math.min(8, tempPrefix); // Number of bits for the current octet
+                // Calculate the decimal value for the octet based on the number of '1' bits.
+                mask.push(bits === 0 ? 0 : 256 - Math.pow(2, 8 - bits));
+                tempPrefix -= bits; // Decrement remaining prefix bits
+            }
+            return mask.join(".");
+        }
+
+        /**
+         * Converts a decimal octet to its 8-bit binary string representation.
+         * @param {number} decimal - The decimal value of the octet (0-255).
+         * @returns {string} The 8-bit binary string (e.g., "11000000").
+         */
+        function decimalToBinary(decimal) {
+            return (decimal >>> 0).toString(2).padStart(8, '0');
+        }
+
+        /**
+         * Converts a dotted decimal IP/mask to a 32-bit binary string.
+         * @param {string} ipOrMask - The IP address or mask string (e.g., "255.255.255.0").
+         * @returns {string} The 32-bit binary string.
+         */
+        function ipToBinaryString(ipOrMask) {
+            return ipOrMask.split('.').map(octet => decimalToBinary(parseInt(octet))).join('');
+        }
+
+        /**
+         * Downloads a specific HTML element as a PNG image.
+         * @param {string} elementId - The ID of the HTML element to capture.
+         * @param {string} filename - The desired filename for the downloaded image.
+         */
+        async function downloadElementAsImage(elementId, filename) {
+            showLoading("Descargando imagen...");
+            const element = el(elementId);
+            if (!element) {
+                console.error(`Element with ID ${elementId} not found.`);
+                hideLoading();
+                return;
+            }
+            try {
+                const canvas = await html2canvas(element, { 
+                    scale: 2, 
+                    logging: false, 
+                    useCORS: true 
+                });
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showSuccess(`Imagen '${filename}' descargada.`);
+            } catch (error) {
+                console.error('Error al generar la imagen:', error);
+                showError('Error al descargar la imagen. Inténtelo de nuevo.');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        /**
+         * Downloads a table's content as an XLSX file.
+         * @param {string} tableId - The ID of the table element to convert.
+         * @param {string} filename - The desired filename for the downloaded XLSX.
+         */
+        function downloadTableAsXlsx(tableId, filename) {
+            showLoading("Descargando archivo Excel...");
+            const table = el(tableId).querySelector('table');
+            if (!table) {
+                console.error(`Table with ID ${tableId} not found.`);
+                hideLoading();
+                return;
+            }
+
+            try {
+                const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+                XLSX.writeFile(wb, filename);
+                showSuccess(`Archivo '${filename}' descargado.`);
+            } catch (error) {
+                console.error('Error al generar el archivo XLSX:', error);
+                showError('Error al descargar el archivo XLSX. Inténtelo de nuevo.');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        /**
+         * Toggles dark mode on/off and saves preference.
+         */
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkModePreference', isDarkMode);
+            // Update icon
+            const currentIconSpan = darkModeToggle.querySelector('span');
+            // Ensure lucide is defined before trying to access its icons
+            if (typeof lucide !== 'undefined' && lucide.icons) {
+                if (isDarkMode) {
+                    currentIconSpan.setAttribute('data-lucide', 'sun');
+                } else {
+                    currentIconSpan.setAttribute('data-lucide', 'moon');
+                }
+                // Call createIcons to re-render the SVG based on the updated data-lucide attribute
+                lucide.createIcons(); 
+            } else {
+                console.warn("Lucide library not loaded, cannot update icon.");
+            }
+        }
+
+        // Event listener for the Calculate button
+        el("calcBtn").addEventListener("click", () => {
+            showLoading("Calculando subredes...");
+            tbody.innerHTML = "";
+            tableWrap.style.display = "none";
+            
+            powersOf2Row.innerHTML = "";
+            binaryMaskRow.innerHTML = "";
+            pNotationRow.innerHTML = "";
+            processTable24BitWrap.style.display = "none";
+
+            let baseIpString = ipBaseInput.value; // Use ipBaseInput
+            let baseIpLong;
+            try {
+                baseIpLong = ipToLong(baseIpString);
+            } catch (e) {
+                hideLoading();
+                return showError("Dirección IP inválida. Por favor, use el formato XXX.XXX.XXX.XXX. Detalle: " + e.message);
+            }
+
+            const clase = el("clase").value;
+            const numSubnets = +el("numSubnets").value;
+            const hosts = +el("hostsPerSubnet").value;
+
+            // Input validation
+            if (!numSubnets || numSubnets < 1 || numSubnets > 1000) {
+                hideLoading();
+                return showError("Número de subredes debe ser entre 1 y 1000.");
+            }
+            if (!hosts || hosts < 1) {
+                hideLoading();
+                return showError("Hosts requeridos debe ser mayor que cero.");
+            }
+
+            // Calculate subnetting parameters
+            const totalNeeded = hosts + 2; // Hosts + Network Address + Broadcast Address
+            const hostBits = Math.ceil(Math.log2(totalNeeded)); // Number of bits needed for hosts
+            if (hostBits > 30) { // Max bits for hosts in a /2 subnet (32-2)
+                hideLoading();
+                return showError("Demasiados hosts requeridos. El número máximo de hosts es 2^30 - 2.");
+            }
+            const blockSize = 2 ** hostBits; // Size of each subnet (number of IPs)
+            const newPrefix = 32 - hostBits; // New CIDR prefix length
+            const maskDecimal = prefixToMask(newPrefix); // New subnet mask in dotted decimal
+
+            let offset = 0;
+            const results = [];
+
+            // Generate subnetting results
+            for (let i = 0; i < numSubnets; i++) {
+                const net = baseIpLong + offset;
+                const bcast = net + blockSize - 1;
+
+                // Check for IP overflow (if broadcast exceeds 255.255.255.255)
+                if (net > 0xFFFFFFFF || bcast > 0xFFFFFFFF) {
+                    showError("El rango de subredes excede el espacio de direcciones IP disponible.");
+                    break; // Stop generating if overflow occurs
+                }
+
+                results.push({
+                    subnet: longToIp(net),
+                    gateway: longToIp(net + 1), // Common practice, but not strictly required by protocol
+                    firstValid: longToIp(net + 2),
+                    lastValid: longToIp(bcast - 1),
+                    broadcast: longToIp(bcast),
+                    mask: `${maskDecimal} (/` + newPrefix + `)`
+                });
+                offset += blockSize;
+            }
+
+            // Populate the main subnetting results table
+            for (let i = 0; i < Math.min(results.length, 100); i++) { // Limit to 100 rows for performance
+                const row = document.createElement("tr");
+                const r = results[i];
+                row.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>${r.subnet}</td>
+                    <td>${r.gateway}</td>
+                    <td>${r.firstValid}</td>
+                    <td>${r.lastValid}</td>
+                    <td>${r.broadcast}</td>
+                    <td>${r.mask}</td>`;
+                tbody.appendChild(row);
+            }
+            tableWrap.style.display = "block";
+
+            // --- Generate and populate the 24-bit Subnetting Process Table ---
+            
+            // Determine the number of bits for the network portion within the last 24 bits
+            // This is 24 (total bits in table) - hostBits (bits for hosts)
+            const networkBitsIn24 = 24 - hostBits;
+
+            // Create the binary string for the middle row
+            let binaryMaskString = '';
+            for (let i = 0; i < 24; i++) {
+                if (i < networkBitsIn24) {
+                    binaryMaskString += '1'; // Network bits
+                } else {
+                    binaryMaskString += '0'; // Host bits
+                }
+            }
+
+            // Populate the powers of 2 row and P notation row
+            let powersHtml = '';
+            let pNotationHtml = '';
+            // Iterate from P23 down to P0 (which corresponds to powers 2^23 down to 2^0)
+            for (let i = 23; i >= 0; i--) {
+                // The border should be to the left of the column for 2^15 and 2^7
+                const isOctetBoundary = (i === 15 || i === 7); 
+                const classAttr = isOctetBoundary ? ' class="octet-boundary"' : '';
+                powersHtml += `<th${classAttr}>${Math.pow(2, i)}</th>`;
+                pNotationHtml += `<th${classAttr}>2^${i}</th>`; 
+            }
+            powersOf2Row.innerHTML = powersHtml;
+            pNotationRow.innerHTML = pNotationHtml;
+
+            // Populate the binary mask row
+            let binaryMaskHtml = '';
+            for (let i = 0; i < binaryMaskString.length; i++) {
+                const bit = binaryMaskString[i];
+                // Calculate the corresponding P value for the current bit
+                // Since the loop for binaryMaskString goes from left to right (index 0 to 23)
+                // and P values go from 23 down to 0, the P value is 23 - i.
+                const pValue = 23 - i; 
+                // The border should be to the left of the column for P15 and P7
+                const isOctetBoundary = (pValue === 15 || pValue === 7);
+                const classAttr = isOctetBoundary ? ' class="octet-boundary"' : '';
+                binaryMaskHtml += `<td${classAttr}>${bit}</td>`;
+            }
+            binaryMaskRow.innerHTML = binaryMaskHtml;
+
+            processTable24BitWrap.style.display = "block"; // Show the 24-bit process table
+            hideLoading();
+            showSuccess("Cálculo completado.");
+        });
+
+        // Event listener for the Clear button
+        clearBtn.addEventListener("click", () => {
+            el("ipBase").value = "192.168.1.0"; // Reset to a default value
+            el("clase").value = "C";
+            el("numSubnets").value = 1;
+            el("hostsPerSubnet").value = 1;
+            tableWrap.style.display = "none";
+            tbody.innerHTML = "";
+            // Clear and hide the 24-bit process table
+            powersOf2Row.innerHTML = "";
+            binaryMaskRow.innerHTML = "";
+            pNotationRow.innerHTML = "";
+            processTable24BitWrap.style.display = "none";
+            hideLoading();
+            showSuccess("Campos limpiados."); // Log success
+            validateIpInput(); // Re-validate after clearing
+        });
+
+        // Event listeners for download buttons
+        downloadImagesBtn.addEventListener("click", async () => {
+            if (tableWrap.style.display === "block") {
+                await downloadElementAsImage('tableWrap', 'resultados_subneteo.png');
+            } else {
+                showError('La tabla de resultados de subneteo no está visible para descargar.');
+            }
+            if (processTable24BitWrap.style.display === "block") {
+                await downloadElementAsImage('processTable24BitWrap', 'representacion_binaria.png');
+            } else {
+                showError('La tabla de representación binaria no está visible para descargar.');
+            }
+        });
+
+        downloadXlsxBtn.addEventListener("click", () => {
+            if (tableWrap.style.display === "block") {
+                downloadTableAsXlsx('tableWrap', 'resultados_subneteo.xlsx');
+            } else {
+                showError('La tabla de resultados de subneteo no está visible para descargar.');
+            }
+            if (processTable24BitWrap.style.display === "block") {
+                downloadTableAsXlsx('processTable24BitWrap', 'representacion_binaria.xlsx');
+            } else {
+                showError('La tabla de representación binaria no está visible para descargar.');
+            }
+        });
+
+        // Event listener for Dark Mode button
+        darkModeToggle.addEventListener("click", toggleDarkMode);
+
+        // Event listener for instant IP validation
+        ipBaseInput.addEventListener("input", validateIpInput);
+
+
+        // Initial setup on load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply dark mode preference on load
+            const savedDarkMode = localStorage.getItem('darkModePreference');
+            if (savedDarkMode === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+            // Create Lucide icons after the DOM is loaded and dark mode preference is applied
+            // Ensure lucide is defined before calling createIcons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+
+                // Ensure the correct icon is displayed on initial load based on dark mode preference
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                const currentIconSpan = darkModeToggle.querySelector('span');
+                if (isDarkMode) {
+                    currentIconSpan.setAttribute('data-lucide', 'sun');
+                } else {
+                    currentIconSpan.setAttribute('data-lucide', 'moon');
+                }
+                // Call createIcons again to ensure the icon is rendered correctly after setting attribute
+                lucide.createIcons(); 
+            } else {
+                console.warn("Lucide library not loaded on DOMContentLoaded, icons may not render.");
+            }
+            
+            // Perform initial IP validation
+            validateIpInput();
+            // Perform initial calculation for demonstration
+            el("calcBtn").click();
+        });
+    </script>
+</body>
+</html>
