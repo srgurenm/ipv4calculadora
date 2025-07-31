@@ -235,7 +235,7 @@
         #languageToggle {
             position: fixed;
             top: 20px;
-            right: 70px; /* Ajustado para dar más espacio */
+            right: 70px;
             z-index: 1000;
             padding: 3px 6px;
             border-radius: 6px;
@@ -254,6 +254,31 @@
 
         #languageToggle:hover {
             background-color: rgba(0, 122, 204, 0.4);
+        }
+
+        .author-info {
+            margin-top: 40px;
+            text-align: center;
+            width: 100%;
+        }
+
+        #authorButton {
+            background-color: rgba(127, 140, 141, 0.1);
+            color: #bdc3c7;
+            border: 1px solid rgba(127, 140, 141, 0.3);
+            padding: 8px 15px;
+            font-size: 0.85rem;
+            border-radius: 20px;
+            display: inline-block;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            width: auto;
+        }
+
+        #authorButton:hover {
+            background-color: rgba(127, 140, 141, 0.2);
+            color: #ecf0f1;
+            border-color: rgba(127, 140, 141, 0.5);
         }
 
         body.light-mode {
@@ -361,6 +386,17 @@
             background-color: rgba(0, 122, 204, 0.4);
         }
 
+        body.light-mode #authorButton {
+            background-color: rgba(127, 140, 141, 0.1);
+            color: #2c3e50;
+            border-color: rgba(127, 140, 141, 0.3);
+        }
+        body.light-mode #authorButton:hover {
+            background-color: rgba(127, 140, 141, 0.2);
+            color: #34495e;
+            border-color: rgba(127, 140, 141, 0.5);
+        }
+
 
         @media (max-width: 600px) {
             h1 {
@@ -399,6 +435,10 @@
                 right: 55px;
                 padding: 3px 6px;
                 font-size: 0.65rem;
+            }
+            #authorButton {
+                font-size: 0.75rem;
+                padding: 6px 12px;
             }
         }
     </style>
@@ -484,6 +524,10 @@
         <button id="downloadXlsxBtn">
             <span data-lucide="file-spreadsheet"></span> <span class="button-text">Descargar Tablas como Excel (XLSX)</span>
         </button>
+    </div>
+
+    <div class="author-info">
+        <a id="authorButton" href="https://www.amazon.com/author/srgurem" target="_blank" rel="noopener noreferrer">By Jose C. Sierra</a>
     </div>
 
     <div id="loadingIndicator"></div>
@@ -956,7 +1000,7 @@
                 }
                 lucide.createIcons(); 
             } else {
-                console.warn("Lucide library not loaded on DOMContentLoaded, icons may not render.");
+                console.warn("Lucide library not loaded, cannot update icon.");
             }
             
             validateIpInput();
