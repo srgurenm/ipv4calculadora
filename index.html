@@ -1,1012 +1,621 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Calculadora IPv4</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Subnetting Pro 2.0</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración de Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 800: '#075985', 900: '#0c4a6e' },
+                        dark: { 800: '#1e293b', 900: '#0f172a' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #1a1a1a;
-            color: #ecf0f1;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
-
-        fieldset {
-            border: none;
-            background: #2c3e50;
-            border-radius: 10px;
-            padding: 24px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            width: 100%;
-        }
-
-        h1 {
-            font-size: 2.4rem;
-            margin-bottom: 24px;
-            text-align: center;
-            font-weight: 600;
-            color: #ecf0f1;
-            transition: color 0.3s ease;
-        }
-
-        legend {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #61dafb;
-            margin-bottom: 10px;
-        }
-
-        label {
-            display: block;
-            margin-top: 16px;
-            margin-bottom: 6px;
-            font-size: 0.95rem;
-            color: #bdc3c7;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 12px;
-            font-size: 1rem;
-            border: 1px solid #5f7c8a;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            background-color: #4a6572;
-            color: #ecf0f1;
-        }
-
-        input:focus, select:focus {
-            border-color: #61dafb;
-            outline: none;
-            background: #5a7482;
-        }
-
-        input.ip-valid {
-            border-color: #2ecc71;
-        }
-        input.ip-invalid {
-            border-color: #e74c3c;
-        }
-
-        button {
-            background-color: #007acc;
-            color: white;
-            font-weight: bold;
-            border: none;
-            margin-top: 10px;
-            cursor: pointer;
-            transition: background 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px;
-            font-size: 1rem;
-            border-radius: 6px;
-            width: 100%;
-        }
-
-        button:hover {
-            background-color: #005f99;
-        }
-
-        button:active {
-            background-color: #004b80;
-        }
-
-        .table-container {
-            display: none;
-            background: #2c3e50;
-            border-radius: 10px;
-            padding: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            overflow-x: auto;
-            margin-top: 20px;
-            width: 100%;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            padding: 12px;
-            border: 1px solid #5f7c8a;
-            text-align: center;
-            font-size: 0.95rem;
-        }
-
-        th {
-            background-color: #4a6572;
-            font-weight: bold;
-            color: #ecf0f1;
-        }
-
-        tr:nth-child(even) td {
-            background-color: #405a66;
-        }
-
-        tr:hover td {
-            background-color: #506f7c;
-        }
-
-        #processTable24BitWrap h2 {
-            font-size: 1.5rem;
-            color: #ecf0f1;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        #processTable24Bit th, #processTable24Bit td {
-            padding: 8px 4px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-        }
-        #processTable24Bit thead th {
-            font-size: 0.75rem;
-        }
-
-        .octet-boundary {
-            border-left: 2px solid #61dafb;
-        }
-
-        .download-buttons-container {
-            margin-top: 30px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .download-buttons-container button {
-            background-color: #218838;
-        }
-        .download-buttons-container button:hover {
-            background-color: #1e7e34;
-        }
-        .download-buttons-container button:active {
-            background-color: #1e7e34;
-        }
-
-        #loadingIndicator {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 20px 30px;
-            border-radius: 8px;
-            z-index: 2000;
-            font-size: 1.2rem;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
-
-        #darkModeToggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: rgba(97, 218, 251, 0.2);
-            border: 1px solid rgba(97, 218, 251, 0.4);
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-            color: #61dafb;
-        }
-
-        #darkModeToggle:hover {
-            background-color: rgba(97, 218, 251, 0.4);
-        }
-
-        #languageToggle {
-            position: fixed;
-            top: 20px;
-            right: 70px;
-            z-index: 1000;
-            padding: 3px 6px;
-            border-radius: 6px;
-            background-color: rgba(0, 122, 204, 0.2);
-            border: 1px solid rgba(0, 122, 204, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 2px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-            color: #007acc;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        #languageToggle:hover {
-            background-color: rgba(0, 122, 204, 0.4);
-        }
-
-        .author-info {
-            margin-top: 40px;
-            text-align: center;
-            width: 100%;
-        }
-
-        #authorButton {
-            background-color: rgba(127, 140, 141, 0.1);
-            color: #bdc3c7;
-            border: 1px solid rgba(127, 140, 141, 0.3);
-            padding: 8px 15px;
-            font-size: 0.85rem;
-            border-radius: 20px;
-            display: inline-block;
-            text-decoration: none;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-            width: auto;
-        }
-
-        #authorButton:hover {
-            background-color: rgba(127, 140, 141, 0.2);
-            color: #ecf0f1;
-            border-color: rgba(127, 140, 141, 0.5);
-        }
-
-        body.light-mode {
-            background: #eef1f5;
-            color: #2c3e50;
-        }
-
-        body.light-mode h1 {
-            color: #34495e;
-        }
-
-        body.light-mode fieldset {
-            background: #ffffff;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        body.light-mode legend {
-            color: #007acc;
-        }
-
-        body.light-mode label {
-            color: #2c3e50;
-        }
-
-        body.light-mode input, body.light-mode select {
-            background-color: #ffffff;
-            border-color: #ccc;
-            color: #2c3e50;
-        }
-
-        body.light-mode input:focus, body.light-mode select:focus {
-            border-color: #007acc;
-            background: #f0f8ff;
-        }
-
-        body.light-mode button {
-            background-color: #007acc;
-            color: white;
-        }
-        body.light-mode button:hover {
-            background-color: #005f99;
-        }
-        body.light-mode button:active {
-            background-color: #004b80;
-        }
-
-        body.light-mode .table-container {
-            background: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        body.light-mode table {
-            border-color: #ddd;
-        }
-
-        body.light-mode th, body.light-mode td {
-            border-color: #ddd;
-        }
-
-        body.light-mode th {
-            background-color: #f5f5f5;
-            color: #2c3e50;
-        }
-
-        body.light-mode tr:nth-child(even) td {
-            background-color: #f9f9f9;
-        }
-
-        body.light-mode tr:hover td {
-            background-color: #e8f4ff;
-        }
-
-        body.light-mode #processTable24BitWrap h2 {
-            color: #34495e;
-        }
-
-        body.light-mode .octet-boundary {
-            border-left-color: #007acc;
-        }
-        body.light-mode .download-buttons-container button {
-            background-color: #28a745;
-        }
-        body.light-mode .download-buttons-container button:hover {
-            background-color: #218838;
-        }
-        body.light-mode #loadingIndicator {
-            color: #777;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
         
-        body.light-mode #darkModeToggle {
-            background-color: rgba(127, 140, 141, 0.2);
-            border-color: rgba(127, 140, 141, 0.4);
-            color: #2c3e50;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Animation classes */
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Glass effect enhancement */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
-        body.light-mode #darkModeToggle:hover {
-            background-color: rgba(127, 140, 141, 0.4);
-        }
-
-        body.light-mode #languageToggle {
-            background-color: rgba(0, 122, 204, 0.2);
-            border-color: rgba(0, 122, 204, 0.4);
-            color: #007acc;
-        }
-        body.light-mode #languageToggle:hover {
-            background-color: rgba(0, 122, 204, 0.4);
-        }
-
-        body.light-mode #authorButton {
-            background-color: rgba(127, 140, 141, 0.1);
-            color: #2c3e50;
-            border-color: rgba(127, 140, 141, 0.3);
-        }
-        body.light-mode #authorButton:hover {
-            background-color: rgba(127, 140, 141, 0.2);
-            color: #34495e;
-            border-color: rgba(127, 140, 141, 0.5);
-        }
-
-
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 2rem;
-            }
-
-            input, select, button {
-                font-size: 0.95rem;
-            }
-
-            body {
-                padding: 15px;
-            }
-
-            fieldset, .table-container {
-                padding: 15px;
-                max-width: 100%;
-            }
-
-            th, td {
-                padding: 8px;
-                font-size: 0.85rem;
-            }
-            #processTable24Bit th, #processTable24Bit td {
-                padding: 6px 2px;
-                font-size: 0.7rem;
-            }
-            #darkModeToggle {
-                top: 10px;
-                right: 10px;
-                width: 35px;
-                height: 35px;
-            }
-            #languageToggle {
-                top: 10px;
-                right: 55px;
-                padding: 3px 6px;
-                font-size: 0.65rem;
-            }
-            #authorButton {
-                font-size: 0.75rem;
-                padding: 6px 12px;
-            }
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.7);
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-900 dark:bg-dark-900 dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col">
 
-    <h1 id="mainTitle">Calculadora de Subredes</h1>
+    <!-- Top Navigation Bar -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-primary-500 p-2 rounded-lg shadow-lg shadow-primary-500/30">
+                        <i data-lucide="network" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-indigo-600 dark:from-primary-400 dark:to-indigo-400 truncate">
+                            Subnetting Pro
+                        </h1>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 font-medium tracking-wider uppercase hidden sm:block">Calculadora Avanzada IPv4</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="languageToggle" class="p-2 rounded-lg text-sm font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all flex items-center gap-1">
+                        <i data-lucide="languages" class="w-4 h-4"></i>
+                        <span id="languageText">ES</span>
+                    </button>
+                    <button id="darkModeToggle" class="p-2 rounded-full text-gray-600 dark:text-yellow-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
+                        <i data-lucide="sun" class="w-5 h-5 block dark:hidden"></i>
+                        <i data-lucide="moon" class="w-5 h-5 hidden dark:block"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-    <button id="darkModeToggle">
-        <span data-lucide="sun"></span> 
-    </button>
+    <!-- Main Content -->
+    <main class="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left Column: Controls -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Input Card -->
+                <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden fade-in">
+                    <div class="p-6 space-y-5">
+                        <h2 class="text-lg font-semibold flex items-center gap-2 text-gray-800 dark:text-white mb-4">
+                            <i data-lucide="sliders" class="w-5 h-5 text-primary-500"></i>
+                            <span data-i18n="subnetParameters">Configuración</span>
+                        </h2>
 
-    <button id="languageToggle">
-        <span id="languageText">English</span> 
-    </button>
+                        <!-- IP Input -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide ml-1" data-i18n="ipBase">Dirección IP Base</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i data-lucide="globe" class="h-4 w-4 text-gray-400 group-focus-within:text-primary-500 transition-colors"></i>
+                                </div>
+                                <input type="text" id="ipBase" value="192.168.1.0" class="block w-full pl-10 pr-3 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 dark:text-white font-mono placeholder-gray-400 transition-all outline-none text-sm sm:text-base shadow-sm" placeholder="192.168.0.0">
+                            </div>
+                        </div>
 
-    <fieldset>
-        <legend id="legendSubnetParameters">Parámetros de Subred</legend>
+                        <!-- Class Select -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide ml-1" data-i18n="networkClass">Clase / CIDR Inicial</label>
+                            <div class="relative">
+                                <select id="clase" class="block w-full pl-4 pr-10 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 dark:text-white appearance-none cursor-pointer text-sm sm:text-base shadow-sm outline-none">
+                                    <option value="8">Clase A (/8)</option>
+                                    <option value="16">Clase B (/16)</option>
+                                    <option value="24" selected>Clase C (/24)</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
+                                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                                </div>
+                            </div>
+                        </div>
 
-        <label for="ipBase" id="labelIpBase">Dirección IP base</label>
-        <input type="text" id="ipBase" placeholder="Ej. 192.168.0.0" value="192.168.1.0">
+                        <!-- Subnets & Hosts Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide ml-1" data-i18n="numSubnets">Subredes</label>
+                                <input type="number" id="numSubnets" min="1" max="5000" value="4" class="block w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white outline-none shadow-sm transition-all" placeholder="4">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide ml-1 truncate" data-i18n="hostsPerSubnet">Hosts (Opcional)</label>
+                                <input type="number" id="hostsPerSubnet" min="1" class="block w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white outline-none shadow-sm transition-all placeholder:text-gray-400 placeholder:text-xs" placeholder="Auto">
+                            </div>
+                        </div>
 
-        <label for="clase" id="labelClase">Clase de red</label>
-        <select id="clase">
-            <option value="A">A (/8)</option>
-            <option value="B">B (/16)</option>
-            <option value="C" selected>C (/24)</option>
-        </select>
+                        <!-- Action Buttons -->
+                        <div class="pt-2 flex gap-3">
+                            <button id="calcBtn" class="flex-1 bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-700 hover:to-indigo-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-primary-500/30 transform transition hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 group">
+                                <i data-lucide="calculator" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
+                                <span data-i18n="calculate">Calcular</span>
+                            </button>
+                            <button id="clearBtn" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 p-3.5 rounded-xl transition-colors" title="Limpiar">
+                                <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-        <label for="numSubnets" id="labelNumSubnets">Número de subredes (1–1000)</label>
-        <input type="number" id="numSubnets" min="1" max="1000" value="1">
+                <!-- Live Stats Card (Summary) -->
+                <div id="resultSummaryCard" class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 hidden fade-in">
+                    <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4" data-i18n="calculationSummary">Resumen de Cálculo</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-xl border border-primary-100 dark:border-primary-800/30">
+                            <span class="text-xs text-primary-600 dark:text-primary-400 font-medium block mb-1" data-i18n="resultMask">Nueva Máscara</span>
+                            <span id="valResultMask" class="text-lg font-mono font-bold text-primary-700 dark:text-primary-300">-</span>
+                        </div>
+                        <div class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-xl border border-indigo-100 dark:border-indigo-800/30">
+                            <span class="text-xs text-indigo-600 dark:text-indigo-400 font-medium block mb-1" data-i18n="maxHosts">Hosts Útiles</span>
+                            <span id="valMaxHosts" class="text-lg font-mono font-bold text-indigo-700 dark:text-indigo-300">-</span>
+                        </div>
+                    </div>
+                </div>
 
-        <label for="hostsPerSubnet" id="labelHostsPerSubnet">Hosts requeridos por cada subred</label>
-        <input type="number" id="hostsPerSubnet" min="1" value="1">
+                <!-- Author Info (Mobile friendly placement) -->
+                <div class="text-center">
+                    <a href="https://www.amazon.com/author/srgurem" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-dark-800 border border-gray-200 dark:border-gray-700 text-xs text-gray-500 hover:text-primary-600 dark:hover:text-primary-400 transition-colors shadow-sm">
+                        <span class="font-medium">By Jose C. Sierra</span>
+                        <i data-lucide="external-link" class="w-3 h-3"></i>
+                    </a>
+                </div>
 
-        <button id="calcBtn">
-            <span data-lucide="calculator"></span> <span class="button-text">Calcular</span>
-        </button>
-        <button id="clearBtn" style="background: #e74c3c;">
-            <span data-lucide="trash-2"></span> <span class="button-text">Borrar</span>
-        </button>
-    </fieldset>
+            </div>
 
-    <div class="table-container" id="processTable24BitWrap">
-        <h2 id="binaryRepresentationTitle">Representación Binaria método Oscar G</h2>
-        <table id="processTable24Bit">
-            <thead>
-                <tr id="powersOf2Row">
-                </tr>
-                <tr id="binaryMaskRow">
-                </tr>
-                <tr id="pNotationRow">
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+            <!-- Right Column: Results -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- Placeholder State -->
+                <div id="emptyState" class="flex flex-col items-center justify-center h-64 bg-white dark:bg-dark-800 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 text-center p-6">
+                    <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-full mb-4">
+                        <i data-lucide="activity" class="w-8 h-8 text-gray-400"></i>
+                    </div>
+                    <h3 class="text-gray-900 dark:text-white font-medium mb-1" data-i18n="readyToCalc">Listo para calcular</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs" data-i18n="instruction">Ingresa los parámetros de red a la izquierda y presiona calcular.</p>
+                </div>
+
+                <!-- Results Container -->
+                <div id="resultsArea" class="hidden space-y-6 fade-in">
+                    
+                    <!-- Binary Visualizer -->
+                    <div id="binaryCard" class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 flex justify-between items-center">
+                            <h3 class="font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                                <i data-lucide="binary" class="w-4 h-4 text-indigo-500"></i>
+                                <span data-i18n="binaryRepresentation">Método Binario (Oscar G)</span>
+                            </h3>
+                            <button id="downloadBinaryBtn" class="text-gray-400 hover:text-indigo-500 transition-colors" title="Descargar Imagen">
+                                <i data-lucide="image-down" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        <div class="p-6 overflow-x-auto" id="processTable24BitWrap">
+                            <table class="w-full min-w-[600px] border-collapse" id="processTable24Bit">
+                                <thead class="bg-gray-50 dark:bg-gray-900/50 text-xs uppercase text-gray-500 dark:text-gray-400 font-mono">
+                                    <tr id="powersOf2Row"></tr>
+                                    <tr id="pNotationRow"></tr>
+                                </thead>
+                                <tbody class="font-mono text-sm text-center">
+                                    <tr id="binaryMaskRow" class="text-gray-800 dark:text-gray-200 font-bold border-t border-gray-200 dark:border-gray-700"></tr>
+                                </tbody>
+                            </table>
+                            <div class="mt-3 text-xs text-center text-gray-400 flex justify-center items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-primary-500"></span> Bits de Red
+                                <span class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600 ml-2"></span> Bits de Host
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Results Table -->
+                    <div id="tableCard" class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 flex flex-col h-[600px]">
+                        <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-indigo-100 dark:bg-indigo-900/30 p-2 rounded-lg text-indigo-600 dark:text-indigo-400">
+                                    <i data-lucide="list" class="w-5 h-5"></i>
+                                </div>
+                                <h3 class="font-semibold text-gray-800 dark:text-gray-200" data-i18n="results">Tabla de Subredes</h3>
+                                <span id="recordCount" class="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-mono">0</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button id="downloadTableImgBtn" class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors shadow-sm">
+                                    <i data-lucide="image" class="w-3.5 h-3.5"></i> IMG
+                                </button>
+                                <button id="downloadXlsxBtn" class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors shadow-sm">
+                                    <i data-lucide="sheet" class="w-3.5 h-3.5"></i> Excel
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Table Wrapper with custom scrollbar -->
+                        <div class="flex-grow overflow-auto" id="tableWrap">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-gray-50 dark:bg-gray-900/50 sticky top-0 z-10 shadow-sm backdrop-blur-sm">
+                                    <tr>
+                                        <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">#</th>
+                                        <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider" data-i18n="subnet">Subred</th>
+                                        <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell" data-i18n="mask">Máscara</th>
+                                        <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell" data-i18n="range">Rango Útil</th>
+                                        <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider" data-i18n="broadcast">Broadcast</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody" class="divide-y divide-gray-100 dark:divide-gray-700/50 font-mono text-sm">
+                                    <!-- Rows generated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Overlay Loader -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="flex flex-col items-center">
+            <div class="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+            <p class="mt-4 text-primary-600 font-medium animate-pulse" data-i18n="processing">Procesando...</p>
+        </div>
     </div>
 
-    <div class="table-container" id="tableWrap">
-        <h2 id="resultsTitle">Resultados de Subneteo</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th id="thSubnet">Subred</th>
-                    <th id="thGateway">Puerta de enlace</th>
-                    <th id="thFirstValidIp">1ª IP válida</th>
-                    <th id="thLastValidIp">Última IP válida</th>
-                    <th id="thBroadcast">Broadcast</th>
-                    <th id="thMask">Máscara</th>
-                </tr>
-            </thead>
-            <tbody id="tbody">
-            </tbody>
-        </table>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 z-[100] transform translate-y-20 opacity-0 transition-all duration-300">
+        <div class="bg-dark-800 text-white px-4 py-3 rounded-lg shadow-xl flex items-center gap-3 border border-gray-700">
+            <i data-lucide="check-circle" class="text-green-400 w-5 h-5"></i>
+            <span id="toastMsg" class="text-sm font-medium">Operación Exitosa</span>
+        </div>
     </div>
 
-    <div class="download-buttons-container">
-        <button id="downloadImagesBtn">
-            <span data-lucide="image"></span> <span class="button-text">Descargar Tablas como Imágenes</span>
-        </button>
-        <button id="downloadXlsxBtn">
-            <span data-lucide="file-spreadsheet"></span> <span class="button-text">Descargar Tablas como Excel (XLSX)</span>
-        </button>
-    </div>
-
-    <div class="author-info">
-        <a id="authorButton" href="https://www.amazon.com/author/srgurem" target="_blank" rel="noopener noreferrer">By Jose C. Sierra</a>
-    </div>
-
-    <div id="loadingIndicator"></div>
-    
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lucide-static@latest/lucide.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <script>
+        // --- Translations ---
         const translations = {
             es: {
-                title: "Calculadora de Subredes",
-                subnetParameters: "Parámetros de Subred",
-                ipBase: "Dirección IP base",
-                networkClass: "Clase de red",
-                numSubnets: "Número de subredes (1–1000)",
-                hostsPerSubnet: "Hosts requeridos por cada subred",
+                subnetParameters: "Configuración",
+                ipBase: "Dirección IP Base",
+                networkClass: "Clase / CIDR Inicial",
+                numSubnets: "Subredes (1-5000)",
+                hostsPerSubnet: "Hosts (Opcional)",
                 calculate: "Calcular",
-                clear: "Borrar",
-                binaryRepresentation: "Representación Binaria método Oscar",
-                results: "Resultados de Subneteo",
-                subnet: "Subred",
-                gateway: "Puerta de enlace",
-                firstValidIp: "1ª IP válida",
-                lastValidIp: "Última IP válida",
-                broadcast: "Broadcast",
+                resultMask: "Nueva Máscara",
+                maxHosts: "Hosts Útiles",
+                readyToCalc: "Listo para calcular",
+                instruction: "Define tus requerimientos y obtén tu esquema de direccionamiento al instante.",
+                binaryRepresentation: "Análisis Binario",
+                results: "Tabla de Subredes",
+                subnet: "ID Red",
                 mask: "Máscara",
-                downloadImages: "Descargar Tablas como Imágenes",
-                downloadXlsx: "Descargar Tablas como Excel (XLSX)",
-                processing: "Procesando...",
-                downloadingImage: "Descargando imagen...",
-                downloadingExcel: "Descargando archivo Excel...",
-                ipInvalid: "Dirección IP inválida. Por favor, use el formato XXX.XXX.XXX.XXX.",
-                numSubnetsInvalid: "Número de subredes debe ser entre 1 y 1000.",
-                hostsInvalid: "Hosts requeridos debe ser mayor que cero.",
-                ipRangeExceeded: "El rango de subredes excede el espacio de direcciones IP disponible.",
-                calculationComplete: "Cálculo completado.",
-                fieldsCleared: "Campos limpiados.",
-                tableResults: "resultados de subneteo",
-                tableBinary: "representación binaria",
-                imageDownloaded: "Imagen '{filename}' descargada.",
-                excelDownloaded: "Archivo '{filename}' descargado.",
-                errorGeneratingImage: "Error al generar la imagen. Inténtelo de nuevo.",
-                errorDownloadingExcel: "Error al descargar el archivo XLSX. Inténtelo de nuevo."
+                range: "Rango Útil (Host Min - Max)",
+                broadcast: "Broadcast",
+                processing: "Procesando topología...",
+                errorIp: "IP Inválida",
+                errorParams: "Imposible calcular: Límite de la red excedido.",
+                successCalc: "Cálculo completado exitosamente",
+                downloadImg: "Imagen generada",
+                downloadXls: "Excel generado"
             },
             en: {
-                title: "Subnet Calculator",
-                subnetParameters: "Subnet Parameters",
+                subnetParameters: "Configuration",
                 ipBase: "Base IP Address",
-                networkClass: "Network Class",
-                numSubnets: "Number of subnets (1–1000)",
-                hostsPerSubnet: "Required hosts per subnet",
+                networkClass: "Base CIDR / Class",
+                numSubnets: "Subnets (1-5000)",
+                hostsPerSubnet: "Hosts (Optional)",
                 calculate: "Calculate",
-                clear: "Clear",
-                binaryRepresentation: "Binary Representation Oscar's Method",
-                results: "Subnetting Results",
-                subnet: "Subnet",
-                gateway: "Gateway",
-                firstValidIp: "1st Valid IP",
-                lastValidIp: "Last Valid IP",
-                broadcast: "Broadcast",
+                resultMask: "New Mask",
+                maxHosts: "Usable Hosts",
+                readyToCalc: "Ready to Calculate",
+                instruction: "Define your requirements and get your addressing scheme instantly.",
+                binaryRepresentation: "Binary Analysis",
+                results: "Subnet Table",
+                subnet: "Network ID",
                 mask: "Mask",
-                downloadImages: "Download Tables as Images",
-                downloadXlsx: "Download Tables as Excel (XLSX)",
-                processing: "Processing...",
-                downloadingImage: "Downloading image...",
-                downloadingExcel: "Downloading Excel file...",
-                ipInvalid: "Invalid IP address. Please use XXX.XXX.XXX.XXX format.",
-                numSubnetsInvalid: "Number of subnets must be between 1 and 1000.",
-                hostsInvalid: "Required hosts must be greater than zero.",
-                ipRangeExceeded: "The subnet range exceeds the available IP address space.",
-                calculationComplete: "Calculation complete.",
-                fieldsCleared: "Fields cleared.",
-                tableResults: "subnetting results",
-                tableBinary: "binary representation",
-                imageDownloaded: "Image '{filename}' downloaded.",
-                excelDownloaded: "File '{filename}' downloaded.",
-                errorGeneratingImage: "Error generating image. Please try again.",
-                errorDownloadingExcel: "Error downloading XLSX file. Please try again."
+                range: "Usable Range (Min - Max)",
+                broadcast: "Broadcast",
+                processing: "Processing topology...",
+                errorIp: "Invalid IP",
+                errorParams: "Cannot calculate: Network limits exceeded.",
+                successCalc: "Calculation completed successfully",
+                downloadImg: "Image generated",
+                downloadXls: "Excel generated"
             }
         };
 
-        let currentLanguage = localStorage.getItem('appLanguage') || 'es';
-
+        // --- Core Application Logic ---
+        let currentLang = 'es';
         const el = id => document.getElementById(id);
 
-        const ipBaseInput = el("ipBase");
-        const tableWrap = el("tableWrap");
-        const tbody = el("tbody");
-        const processTable24BitWrap = el("processTable24BitWrap");
-        const powersOf2Row = el("powersOf2Row");
-        const binaryMaskRow = el("binaryMaskRow");
-        const pNotationRow = el("pNotationRow");
-        const clearBtn = el("clearBtn");
-        const downloadImagesBtn = el("downloadImagesBtn");
-        const downloadXlsxBtn = el("downloadXlsxBtn");
-        const darkModeToggle = el("darkModeToggle");
-        const languageToggle = el("languageToggle");
-        const languageTextSpan = el("languageText");
-        const loadingIndicator = el("loadingIndicator");
-
-        function updateUIText() {
-            const lang = translations[currentLanguage];
-
-            el("mainTitle").textContent = lang.title;
-            el("legendSubnetParameters").textContent = lang.subnetParameters;
-            el("labelIpBase").textContent = lang.ipBase;
-            el("labelClase").textContent = lang.networkClass;
-            el("labelNumSubnets").textContent = lang.numSubnets;
-            el("labelHostsPerSubnet").textContent = lang.hostsPerSubnet;
-
-            el("calcBtn").querySelector('.button-text').textContent = lang.calculate;
-            el("clearBtn").querySelector('.button-text').textContent = lang.clear;
-
-            el("binaryRepresentationTitle").textContent = lang.binaryRepresentation;
-            el("resultsTitle").textContent = lang.results;
-
-            el("thSubnet").textContent = lang.subnet;
-            el("thGateway").textContent = lang.gateway;
-            el("thFirstValidIp").textContent = lang.firstValidIp;
-            el("thLastValidIp").textContent = lang.lastValidIp;
-            el("thBroadcast").textContent = lang.broadcast;
-            el("thMask").textContent = lang.mask;
-
-            el("downloadImagesBtn").querySelector('.button-text').textContent = lang.downloadImages;
-            el("downloadXlsxBtn").querySelector('.button-text').textContent = lang.downloadXlsx;
-
-            languageTextSpan.textContent = (currentLanguage === 'es' ? 'English' : 'Español');
-        }
-
-        function showError(messageKey, detail = "") {
-            console.error("Error:", translations[currentLanguage][messageKey] + (detail ? " " + detail : ""));
-        }
-
-        function showSuccess(messageKey, filename = "") {
-            let message = translations[currentLanguage][messageKey];
-            if (filename) {
-                message = message.replace('{filename}', filename);
+        function init() {
+            lucide.createIcons();
+            
+            // Check System/User Preference for Dark Mode
+            const userTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (userTheme === 'dark' || (!userTheme && systemDark)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
             }
-            console.log("Éxito:", message);
+
+            // Init Lang
+            const storedLang = localStorage.getItem('lang');
+            if (storedLang) {
+                currentLang = storedLang;
+                updateLangUI();
+            }
+
+            // Pre-fill valid styling
+            validateIpInput();
         }
 
-        function showLoading(messageKey = "processing") {
-            loadingIndicator.textContent = translations[currentLanguage][messageKey];
-            loadingIndicator.style.display = "block";
-            loadingIndicator.style.animation = 'fadeIn 0.3s ease-out forwards';
-        }
+        // --- Helpers ---
+        const ipToLong = (ip) => ip.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0;
+        const longToIp = (long) => [24, 16, 8, 0].map(s => (long >>> s) & 0xFF).join('.');
+        const isValidIp = (ip) => /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip);
+        
+        function showToast(msg, type = 'success') {
+            const toast = el('toast');
+            const msgEl = el('toastMsg');
+            msgEl.textContent = msg;
+            
+            // Icon logic could go here based on type
+            const icon = toast.querySelector('i');
+            if(type === 'error') {
+                icon.setAttribute('data-lucide', 'alert-circle');
+                icon.classList.remove('text-green-400');
+                icon.classList.add('text-red-400');
+            } else {
+                icon.setAttribute('data-lucide', 'check-circle');
+                icon.classList.remove('text-red-400');
+                icon.classList.add('text-green-400');
+            }
+            lucide.createIcons();
 
-        function hideLoading() {
-            loadingIndicator.style.animation = 'fadeOut 0.3s ease-out forwards';
+            toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => {
-                loadingIndicator.style.display = "none";
-                loadingIndicator.style.animation = '';
-            }, 300);
-        }
-
-        function isValidIp(ip) {
-            const parts = ip.trim().split(".");
-            if (parts.length !== 4) return false;
-            for (const part of parts) {
-                const num = parseInt(part);
-                if (isNaN(num) || num < 0 || num > 255) {
-                    return false;
-                }
-            }
-            return true;
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
         }
 
         function validateIpInput() {
-            const ip = ipBaseInput.value;
-            if (isValidIp(ip)) {
-                ipBaseInput.classList.remove('ip-invalid');
-                ipBaseInput.classList.add('ip-valid');
+            const input = el('ipBase');
+            if (isValidIp(input.value)) {
+                input.classList.remove('border-red-500', 'focus:ring-red-500');
+                input.classList.add('border-green-500', 'focus:ring-green-500');
             } else {
-                ipBaseInput.classList.remove('ip-valid');
-                ipBaseInput.classList.add('ip-invalid');
+                input.classList.remove('border-green-500', 'focus:ring-green-500');
+                input.classList.add('border-red-500', 'focus:ring-red-500');
             }
         }
 
-        function ipToLong(ip) {
-            if (!isValidIp(ip)) {
-                throw new Error("IP inválida");
+        // --- Core Calculation ---
+        el('calcBtn').addEventListener('click', () => {
+            const overlay = el('loadingOverlay');
+            overlay.classList.remove('hidden');
+            setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+
+            // Use timeout to allow UI to paint the loader
+            setTimeout(() => {
+                try {
+                    performCalculation();
+                    showToast(translations[currentLang].successCalc);
+                } catch (e) {
+                    showToast(e.message, 'error');
+                } finally {
+                    overlay.classList.add('opacity-0');
+                    setTimeout(() => overlay.classList.add('hidden'), 300);
+                }
+            }, 500);
+        });
+
+        function performCalculation() {
+            const ipStr = el('ipBase').value;
+            if (!isValidIp(ipStr)) throw new Error(translations[currentLang].errorIp);
+            
+            const baseIpLong = ipToLong(ipStr);
+            const baseCidr = parseInt(el('clase').value);
+            const reqSubnets = parseInt(el('numSubnets').value);
+            const reqHostsStr = el('hostsPerSubnet').value;
+            const reqHosts = reqHostsStr ? parseInt(reqHostsStr) : null;
+
+            // Math Logic
+            const bitsForSubnets = Math.ceil(Math.log2(reqSubnets));
+            let targetCidr = baseCidr + bitsForSubnets;
+
+            if (reqHosts !== null) {
+                const bitsForHosts = Math.ceil(Math.log2(reqHosts + 2));
+                const cidrFromHosts = 32 - bitsForHosts;
+                if (baseCidr + bitsForSubnets + bitsForHosts > 32) throw new Error(translations[currentLang].errorParams);
+                if (cidrFromHosts < targetCidr) { /* Host priority check ok */ }
+                targetCidr = cidrFromHosts; // Prioritize host fit
+            } else {
+                if (targetCidr > 30) targetCidr = 30;
+                if (targetCidr > 32) throw new Error(translations[currentLang].errorParams);
             }
-            const parts = ip.trim().split(".");
-            return parts.reduce((acc, val, i) => acc + (parseInt(val) << ((3 - i) * 8)), 0) >>> 0;
-        }
 
-        function longToIp(num) {
-            return [24, 16, 8, 0].map(shift => (num >>> shift) & 0xFF).join(".");
-        }
+            // Results Data
+            const hostBits = 32 - targetCidr;
+            const blockSize = Math.pow(2, hostBits);
+            const hostsPerSubnet = Math.pow(2, hostBits) - 2;
+            const maskStr = [0,1,2,3].map(i => {
+                let bits = Math.min(8, Math.max(0, targetCidr - (i*8)));
+                return bits === 0 ? 0 : 256 - Math.pow(2, 8-bits);
+            }).join('.');
 
-        function prefixToMask(prefix) {
-            const mask = [];
-            let tempPrefix = prefix;
-            for (let i = 0; i < 4; i++) {
-                const bits = Math.min(8, tempPrefix);
-                mask.push(bits === 0 ? 0 : 256 - Math.pow(2, 8 - bits));
-                tempPrefix -= bits;
+            // Update UI Summary
+            el('valResultMask').textContent = `/${targetCidr} (${maskStr})`;
+            el('valMaxHosts').textContent = hostsPerSubnet > 0 ? hostsPerSubnet.toLocaleString() : 0;
+            
+            el('emptyState').classList.add('hidden');
+            el('resultSummaryCard').classList.remove('hidden');
+            el('resultsArea').classList.remove('hidden');
+
+            // Generate Table
+            const tbody = el('tbody');
+            tbody.innerHTML = '';
+            
+            // Align to base network block
+            const baseMask = ~((1 << (32 - baseCidr)) - 1) >>> 0;
+            const networkStart = baseIpLong & baseMask;
+            
+            const limit = Math.min(reqSubnets, 5000);
+            el('recordCount').textContent = limit.toLocaleString();
+
+            const fragment = document.createDocumentFragment();
+            
+            for (let i = 0; i < limit; i++) {
+                const netLong = (networkStart + (i * blockSize)) >>> 0;
+                const broadcastLong = (netLong + blockSize - 1) >>> 0;
+                if (broadcastLong > 0xFFFFFFFF) break;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 transition-colors group";
+                tr.innerHTML = `
+                    <td class="p-4 text-center text-gray-400 text-xs font-mono">${i + 1}</td>
+                    <td class="p-4 font-bold text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-700 dark:group-hover:text-indigo-300">
+                        ${longToIp(netLong)}<span class="text-gray-400 text-xs font-normal">/${targetCidr}</span>
+                    </td>
+                    <td class="p-4 text-gray-600 dark:text-gray-300 hidden sm:table-cell">${maskStr}</td>
+                    <td class="p-4 text-gray-600 dark:text-gray-300 text-xs sm:text-sm hidden md:table-cell">
+                        ${longToIp(netLong + 1)} - ${longToIp(broadcastLong - 1)}
+                    </td>
+                    <td class="p-4 text-gray-500 dark:text-gray-400 text-xs sm:text-sm">
+                        ${longToIp(broadcastLong)}
+                    </td>
+                `;
+                fragment.appendChild(tr);
             }
-            return mask.join(".");
+            tbody.appendChild(fragment);
+
+            // Generate Binary Table
+            renderBinaryTable(targetCidr);
         }
 
-        function decimalToBinary(decimal) {
-            return (decimal >>> 0).toString(2).padStart(8, '0');
-        }
-
-        function ipToBinaryString(ipOrMask) {
-            return ipOrMask.split('.').map(octet => decimalToBinary(parseInt(octet))).join('');
-        }
-
-        async function downloadElementAsImage(elementId, filename) {
-            showLoading("downloadingImage");
-            const element = el(elementId);
-            if (!element) {
-                console.error(`Element with ID ${elementId} not found.`);
-                hideLoading();
-                return;
+        function renderBinaryTable(cidr) {
+            let binaryString = "";
+            for (let i = 0; i < 24; i++) {
+                binaryString += (i < (cidr - 8)) ? "1" : "0";
             }
+            
+            const powers = el('powersOf2Row');
+            const pNot = el('pNotationRow');
+            const binRow = el('binaryMaskRow');
+            
+            powers.innerHTML = ''; pNot.innerHTML = ''; binRow.innerHTML = '';
+            
+            for (let i = 23; i >= 0; i--) {
+                const octetBoundary = (i === 15 || i === 7);
+                const borderClass = octetBoundary ? "border-l-2 border-primary-500 pl-1" : "";
+                
+                // Powers Row
+                const thP = document.createElement('th');
+                thP.className = `p-1 text-center font-normal text-gray-400 ${borderClass}`;
+                thP.textContent = Math.pow(2, i % 8); // Reset power visual for readability or keep absolute? Keeping absolute as per req.
+                // Actually user requested specific format, usually standard is 128 64 32 ... 
+                thP.textContent = Math.pow(2, i);
+                powers.appendChild(thP);
+
+                // Notation Row
+                const thN = document.createElement('th');
+                thN.className = `p-1 text-center text-[10px] text-gray-300 dark:text-gray-600 ${borderClass}`;
+                thN.textContent = `2^${i}`;
+                pNotationRow.appendChild(thN);
+
+                // Bit Row
+                const td = document.createElement('td');
+                const bit = binaryString[23 - i] || "0";
+                const isOne = bit === "1";
+                td.className = `p-1 text-center ${borderClass} ${isOne ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20' : 'text-gray-400 dark:text-gray-600'}`;
+                td.textContent = bit;
+                binRow.appendChild(td);
+            }
+        }
+
+        // --- Event Listeners ---
+        el('ipBase').addEventListener('input', validateIpInput);
+        
+        el('clearBtn').addEventListener('click', () => {
+            el('ipBase').value = '192.168.1.0';
+            el('clase').value = '24';
+            el('numSubnets').value = '4';
+            el('hostsPerSubnet').value = '';
+            el('resultsArea').classList.add('hidden');
+            el('resultSummaryCard').classList.add('hidden');
+            el('emptyState').classList.remove('hidden');
+            validateIpInput();
+        });
+
+        // Downloads
+        async function downloadArea(elementId, filename) {
+            const node = el(elementId);
+            const overlay = el('loadingOverlay');
+            overlay.classList.remove('hidden', 'opacity-0');
+            
             try {
-                const canvas = await html2canvas(element, { 
-                    scale: 2, 
-                    logging: false, 
-                    useCORS: true 
-                });
+                const canvas = await html2canvas(node, { scale: 2, backgroundColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff' });
                 const link = document.createElement('a');
                 link.download = filename;
                 link.href = canvas.toDataURL('image/png');
-                document.body.appendChild(link);
                 link.click();
-                document.body.removeChild(link);
-                showSuccess("imageDownloaded", filename);
-            } catch (error) {
-                console.error('Error al generar la imagen:', error);
-                showError('errorGeneratingImage');
+                showToast(translations[currentLang].downloadImg);
+            } catch(e) {
+                console.error(e);
             } finally {
-                hideLoading();
+                overlay.classList.add('hidden');
             }
         }
 
-        function downloadTableAsXlsx(tableId, filename) {
-            showLoading("downloadingExcel");
-            const table = el(tableId).querySelector('table');
-            if (!table) {
-                console.error(`Table with ID ${tableId} not found.`);
-                hideLoading();
-                return;
-            }
+        el('downloadBinaryBtn').addEventListener('click', () => downloadArea('binaryCard', 'binary_calc.png'));
+        el('downloadTableImgBtn').addEventListener('click', () => downloadArea('tableCard', 'subnets.png'));
+        
+        el('downloadXlsxBtn').addEventListener('click', () => {
+            const table = document.querySelector('#tableWrap table');
+            if(!table) return;
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Subnets" });
+            XLSX.writeFile(wb, 'subnet_calc.xlsx');
+            showToast(translations[currentLang].downloadXls);
+        });
 
-            try {
-                const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-                XLSX.writeFile(wb, filename);
-                showSuccess("excelDownloaded", filename);
-            } catch (error) {
-                console.error('Error al generar el archivo XLSX:', error);
-                showError('errorDownloadingExcel');
-            } finally {
-                hideLoading();
-            }
+        // UI Toggles
+        el('darkModeToggle').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        });
+
+        el('languageToggle').addEventListener('click', () => {
+            currentLang = currentLang === 'es' ? 'en' : 'es';
+            localStorage.setItem('lang', currentLang);
+            updateLangUI();
+        });
+
+        function updateLangUI() {
+            el('languageText').textContent = currentLang.toUpperCase();
+            const t = translations[currentLang];
+            document.querySelectorAll('[data-i18n]').forEach(elem => {
+                const key = elem.getAttribute('data-i18n');
+                if(t[key]) elem.textContent = t[key];
+            });
+            el('ipBase').placeholder = currentLang === 'es' ? 'Ej. 192.168.1.0' : 'Ex. 192.168.1.0';
         }
 
-        function toggleDarkMode() {
-            document.body.classList.toggle('light-mode');
-            const isLightMode = document.body.classList.contains('light-mode');
-            localStorage.setItem('darkModePreference', isLightMode);
+        // --- Init ---
+        init();
 
-            const currentIconSpan = darkModeToggle.querySelector('span[data-lucide]');
-            if (typeof lucide !== 'undefined' && lucide.icons) {
-                if (isLightMode) {
-                    currentIconSpan.setAttribute('data-lucide', 'moon');
-                } else {
-                    currentIconSpan.setAttribute('data-lucide', 'sun');
-                }
-                lucide.createIcons(); 
-            } else {
-                console.warn("Lucide library not loaded, cannot update icon.");
-            }
-        }
-
-        function toggleLanguage() {
-            currentLanguage = (currentLanguage === 'es' ? 'en' : 'es');
-            localStorage.setItem('appLanguage', currentLanguage);
-            updateUIText();
-        }
-
-        el("calcBtn").addEventListener("click", () => {
-            showLoading("processing");
-            tbody.innerHTML = "";
-            tableWrap.style.display = "none";
-            
-            powersOf2Row.innerHTML = "";
-            binaryMaskRow.innerHTML = "";
-            pNotationRow.innerHTML = "";
-            processTable24BitWrap.style.display = "none";
-
-            let baseIpString = ipBaseInput.value;
-            let baseIpLong;
-            try {
-                baseIpLong = ipToLong(baseIpString);
-            } catch (e) {
-                hideLoading();
-                return showError("ipInvalid", e.message);
-            }
-
-            const clase = el("clase").value;
-            const numSubnets = +el("numSubnets").value;
-            const hosts = +el("hostsPerSubnet").value;
-
-            if (!numSubnets || numSubnets < 1 || numSubnets > 1000) {
-                hideLoading();
-                return showError("numSubnetsInvalid");
-            }
-            if (!hosts || hosts < 1) {
-                hideLoading();
-                return showError("hostsInvalid");
-            }
-
-            const totalNeeded = hosts + 2;
-            const hostBits = Math.ceil(Math.log2(totalNeeded));
-            if (hostBits > 30) {
-                hideLoading();
-                return showError("ipRangeExceeded");
-            }
-            const blockSize = 2 ** hostBits;
-            const newPrefix = 32 - hostBits;
-            const maskDecimal = prefixToMask(newPrefix);
-
-            let offset = 0;
-            const results = [];
-
-            for (let i = 0; i < numSubnets; i++) {
-                const net = baseIpLong + offset;
-                const bcast = net + blockSize - 1;
-
-                if (net > 0xFFFFFFFF || bcast > 0xFFFFFFFF) {
-                    showError("ipRangeExceeded");
-                    break;
-                }
-
-                results.push({
-                    subnet: longToIp(net),
-                    gateway: longToIp(net + 1),
-                    firstValid: longToIp(net + 2),
-                    lastValid: longToIp(bcast - 1),
-                    broadcast: longToIp(bcast),
-                    mask: `${maskDecimal} (/` + newPrefix + `)`
-                });
-                offset += blockSize;
-            }
-
-            for (let i = 0; i < Math.min(results.length, 100); i++) {
-                const row = document.createElement("tr");
-                const r = results[i];
-                row.innerHTML = `
-                    <td>${i + 1}</td>
-                    <td>${r.subnet}</td>
-                    <td>${r.gateway}</td>
-                    <td>${r.firstValid}</td>
-                    <td>${r.lastValid}</td>
-                    <td>${r.broadcast}</td>
-                    <td>${r.mask}</td>`;
-                tbody.appendChild(row);
-            }
-            tableWrap.style.display = "block";
-
-            const networkBitsIn24 = 24 - hostBits;
-            let binaryMaskString = '';
-            for (let i = 0; i < 24; i++) {
-                if (i < networkBitsIn24) {
-                    binaryMaskString += '1';
-                } else {
-                    binaryMaskString += '0';
-                }
-            }
-
-            let powersHtml = '';
-            let pNotationHtml = '';
-            for (let i = 23; i >= 0; i--) {
-                const isOctetBoundary = (i === 15 || i === 7); 
-                const classAttr = isOctetBoundary ? ' class="octet-boundary"' : '';
-                powersHtml += `<th${classAttr}>${Math.pow(2, i)}</th>`;
-                pNotationHtml += `<th${classAttr}>2^${i}</th>`; 
-            }
-            powersOf2Row.innerHTML = powersHtml;
-            pNotationRow.innerHTML = pNotationHtml;
-
-            let binaryMaskHtml = '';
-            for (let i = 0; i < binaryMaskString.length; i++) {
-                const bit = binaryMaskString[i];
-                const pValue = 23 - i; 
-                const isOctetBoundary = (pValue === 15 || pValue === 7);
-                const classAttr = isOctetBoundary ? ' class="octet-boundary"' : '';
-                binaryMaskHtml += `<td${classAttr}>${bit}</td>`;
-            }
-            binaryMaskRow.innerHTML = binaryMaskHtml;
-
-            processTable24BitWrap.style.display = "block";
-            hideLoading();
-            showSuccess("calculationComplete");
-        });
-
-        clearBtn.addEventListener("click", () => {
-            el("ipBase").value = "192.168.1.0";
-            el("clase").value = "C";
-            el("numSubnets").value = 1;
-            el("hostsPerSubnet").value = 1;
-            tableWrap.style.display = "none";
-            tbody.innerHTML = "";
-            powersOf2Row.innerHTML = "";
-            binaryMaskRow.innerHTML = "";
-            pNotationRow.innerHTML = "";
-            processTable24BitWrap.style.display = "none";
-            hideLoading();
-            showSuccess("fieldsCleared");
-            validateIpInput();
-        });
-
-        downloadImagesBtn.addEventListener("click", async () => {
-            if (tableWrap.style.display === "block") {
-                await downloadElementAsImage('tableWrap', 'resultados_subneteo.png');
-            } else {
-                showError('tableNotVisible', translations[currentLanguage].tableResults);
-            }
-            if (processTable24BitWrap.style.display === "block") {
-                await downloadElementAsImage('processTable24BitWrap', 'representacion_binaria.png');
-            } else {
-                showError('tableNotVisible', translations[currentLanguage].tableBinary);
-            }
-        });
-
-        downloadXlsxBtn.addEventListener("click", () => {
-            if (tableWrap.style.display === "block") {
-                downloadTableAsXlsx('tableWrap', 'resultados_subneteo.xlsx');
-            } else {
-                showError('tableNotVisible', translations[currentLanguage].tableResults);
-            }
-            if (processTable24BitWrap.style.display === "block") {
-                downloadTableAsXlsx('processTable24BitWrap', 'representacion_binaria.xlsx');
-            } else {
-                showError('tableNotVisible', translations[currentLanguage].tableBinary);
-            }
-        });
-
-        darkModeToggle.addEventListener("click", toggleDarkMode);
-
-        languageToggle.addEventListener("click", toggleLanguage);
-
-        ipBaseInput.addEventListener("input", validateIpInput);
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedDarkModePreference = localStorage.getItem('darkModePreference');
-            if (savedDarkModePreference === 'true') {
-                document.body.classList.add('light-mode');
-            }
-            
-            const savedLanguage = localStorage.getItem('appLanguage');
-            if (savedLanguage) {
-                currentLanguage = savedLanguage;
-            }
-            updateUIText();
-
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-
-                const isLightMode = document.body.classList.contains('light-mode');
-                const currentIconSpan = darkModeToggle.querySelector('span[data-lucide]');
-                if (isLightMode) {
-                    currentIconSpan.setAttribute('data-lucide', 'moon');
-                } else {
-                    currentIconSpan.setAttribute('data-lucide', 'sun');
-                }
-                lucide.createIcons(); 
-            } else {
-                console.warn("Lucide library not loaded, cannot update icon.");
-            }
-            
-            validateIpInput();
-            el("calcBtn").click();
-        });
     </script>
 </body>
 </html>
-
