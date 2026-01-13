@@ -171,7 +171,7 @@
                             <button id="downloadBinaryBtn" class="text-gray-400 hover:text-indigo-500 transition-colors"><i data-lucide="image-down" class="w-5 h-5"></i></button>
                         </div>
                         <div class="p-6 overflow-x-auto">
-                            <table class="w-full min-w-[600px] border-collapse" id="processTable24Bit">
+                            <table class="w-full min-w-[800px] border-collapse" id="processTable24Bit">
                                 <thead class="bg-gray-50 dark:bg-gray-900/50 text-xs uppercase text-gray-500 font-mono">
                                     <tr id="powersOf2Row"></tr>
                                     <tr id="pNotationRow"></tr>
@@ -247,7 +247,6 @@
                     return bits === 0 ? 0 : 256 - Math.pow(2, 8 - bits);
                 }).join('.');
             },
-            // Corrección: Cálculo del salto manual (Magic Number)
             getJump: (cidr) => {
                 const octetIndex = Math.floor((cidr - 1) / 8);
                 const bitsInOctet = cidr - (octetIndex * 8);
@@ -403,12 +402,10 @@
             }
 
             renderResults(baseIpLong, baseCidr, targetCidr, reqSubnets) {
-                // Cantidad total de IPs para el cálculo de bucles
                 const totalAddresses = Math.pow(2, 32 - targetCidr);
                 const hostsPerSubnet = Math.pow(2, 32 - targetCidr) - 2;
                 const maskStr = IPService.calculateMask(targetCidr);
                 
-                // Actualizar resumen visual con el salto por octeto
                 this.el('valResultMask').textContent = `/${targetCidr} (${maskStr})`;
                 this.el('valMaxHosts').textContent = hostsPerSubnet > 0 ? hostsPerSubnet.toLocaleString() : 0;
                 this.el('valNetworkJump').textContent = IPService.getJump(targetCidr).toLocaleString();
@@ -454,17 +451,27 @@
                 return tr;
             }
 
+            // Análisis Binario con potencias incrementales 2^0 a 2^23
             renderBinary(cidr) {
                 const powersRow = this.el('powersOf2Row');
                 const notationRow = this.el('pNotationRow');
                 const binaryRow = this.el('binaryMaskRow');
+                
                 powersRow.innerHTML = ''; notationRow.innerHTML = ''; binaryRow.innerHTML = '';
+                
                 for (let i = 23; i >= 0; i--) {
                     const isOctetBoundary = (i === 15 || i === 7);
                     const borderClass = isOctetBoundary ? "border-l-2 border-primary-500 pl-1" : "";
+                    
+                    // Cálculo de bit encendido basado en CIDR (saltando el primer octeto /8)
                     const bitValue = (23-i) < (cidr - 8) ? "1" : "0";
-                    powersRow.appendChild(this.createCell('th', Math.pow(2, i % 8), `p-1 text-center font-normal text-gray-400 ${borderClass}`));
-                    notationRow.appendChild(this.createCell('th', `2^${i % 8}`, `p-1 text-center text-[10px] text-gray-300 dark:text-gray-600 ${borderClass}`));
+
+                    // Fila superior: Valor decimal absoluto
+                    powersRow.appendChild(this.createCell('th', Math.pow(2, i).toLocaleString(), `p-1 text-center font-normal text-gray-400 ${borderClass}`));
+                    
+                    // Segunda fila: Notación exponencial global
+                    notationRow.appendChild(this.createCell('th', `2^${i}`, `p-1 text-center text-[10px] text-gray-300 dark:text-gray-600 ${borderClass}`));
+                    
                     const tdClass = `p-1 text-center ${borderClass} ${bitValue === "1" ? 'text-primary-600 bg-primary-50 dark:bg-primary-900/20' : 'text-gray-400'}`;
                     binaryRow.appendChild(this.createCell('td', bitValue, tdClass));
                 }
