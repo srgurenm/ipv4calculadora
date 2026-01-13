@@ -2,10 +2,11 @@
 <!--2.0.8-->
 
 
+
 <html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Subnetting Pro 2.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -14,217 +15,371 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: { 500: '#0ea5e9', 600: '#0284c7' },
+                        primary: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 800: '#075985', 900: '#0c4a6e' },
                         dark: { 800: '#1e293b', 900: '#0f172a' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
                     }
                 }
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
-        .binary-cell { min-width: 35px; flex: 1; }
-        .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(10px); }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .dark .glass { background: rgba(15, 23, 42, 0.7); }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900 dark:bg-dark-900 dark:text-gray-100 min-h-screen flex flex-col">
+<body class="bg-gray-50 text-gray-900 dark:bg-dark-900 dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col">
 
-    <nav class="fixed top-0 w-full z-50 glass border-b border-gray-800 p-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold text-primary-500">Subnetting Pro 2.0</h1>
-            <button id="darkModeToggle" class="p-2 bg-gray-800 rounded-full text-yellow-400">
-                <i data-lucide="sun"></i>
-            </button>
-        </div>
-    </nav>
-
-    <main class="pt-24 pb-12 px-4 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div class="lg:col-span-4 space-y-6">
-            <div class="bg-white dark:bg-dark-800 p-6 rounded-2xl shadow-xl border border-gray-700">
-                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <i data-lucide="sliders" class="text-primary-500"></i> Configuración
-                </h2>
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-xs font-bold text-gray-400 uppercase">IP Base</label>
-                        <input type="text" id="ipBase" value="10.50.0.0" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-xl font-mono text-sm outline-none focus:ring-2 focus:ring-primary-500">
+    <nav class="fixed top-0 w-full z-50 glass border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-primary-500 p-2 rounded-lg shadow-lg shadow-primary-500/30">
+                        <i data-lucide="network" class="w-6 h-6 text-white"></i>
                     </div>
                     <div>
-                        <label class="text-xs font-bold text-gray-400 uppercase">Clase Inicial</label>
-                        <select id="clase" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-xl text-sm outline-none cursor-pointer">
-                            <option value="8">Clase A (/8)</option>
-                            <option value="16" selected>Clase B (/16)</option>
-                            <option value="24">Clase C (/24)</option>
-                        </select>
+                        <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-indigo-600 dark:from-primary-400 dark:to-indigo-400 truncate">Subnetting Pro</h1>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 font-medium tracking-wider uppercase hidden sm:block">Calculadora Avanzada IPv4</p>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-xs font-bold text-gray-400 uppercase">Subredes</label>
-                            <input type="number" id="numSubnets" value="30" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-xl font-mono text-sm">
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-gray-400 uppercase">Hosts</label>
-                            <input type="number" id="hostsPerSubnet" value="1500" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-xl font-mono text-sm">
-                        </div>
-                    </div>
-                    <button id="calcBtn" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-primary-500/20">
-                        Calcular Ahora
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="languageToggle" class="p-2 rounded-lg text-sm font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all flex items-center gap-1">
+                        <i data-lucide="languages" class="w-4 h-4"></i>
+                        <span id="languageText">ES</span>
+                    </button>
+                    <button id="darkModeToggle" class="p-2 rounded-full text-gray-600 dark:text-yellow-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
+                        <i data-lucide="sun" class="w-5 h-5 block dark:hidden"></i>
+                        <i data-lucide="moon" class="w-5 h-5 hidden dark:block"></i>
                     </button>
                 </div>
             </div>
-
-            <div id="resultSummaryCard" class="bg-white dark:bg-dark-800 p-6 rounded-2xl border border-gray-700 hidden">
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div class="bg-emerald-900/20 p-3 rounded-xl border border-emerald-800">
-                        <span class="text-[10px] uppercase text-emerald-400 block">Salto</span>
-                        <span id="valNetworkJump" class="text-xl font-bold text-emerald-500">-</span>
-                    </div>
-                    <div class="bg-indigo-900/20 p-3 rounded-xl border border-indigo-800">
-                        <span class="text-[10px] uppercase text-indigo-400 block">Hosts Útiles</span>
-                        <span id="valMaxHosts" class="text-xl font-bold text-indigo-500">-</span>
-                    </div>
-                </div>
-                <div class="bg-primary-900/20 p-4 rounded-xl border border-primary-800">
-                    <span class="text-[10px] uppercase text-primary-400 block">Máscara Final</span>
-                    <span id="valResultMask" class="text-lg font-mono font-bold text-primary-500">-</span>
-                </div>
-            </div>
         </div>
+    </nav>
 
-        <div class="lg:col-span-8 space-y-6">
-            <div id="binaryCard" class="bg-white dark:bg-dark-800 rounded-2xl border border-gray-700 overflow-hidden hidden">
-                <div class="p-4 border-b border-gray-700 bg-gray-800/50 flex justify-between">
-                    <span class="font-semibold text-sm">Análisis Binario (Máscara /21)</span>
-                    <div class="flex gap-4 text-[9px] uppercase font-bold">
-                        <span class="text-gray-500">■ Red</span>
-                        <span class="text-primary-500">■ Subred</span>
-                        <span class="text-amber-500">■ Host</span>
+    <main class="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden fade-in">
+                    <div class="p-6 space-y-5">
+                        <h2 class="text-lg font-semibold flex items-center gap-2 text-gray-800 dark:text-white mb-4">
+                            <i data-lucide="sliders" class="w-5 h-5 text-primary-500"></i>
+                            <span data-i18n="subnetParameters">Configuración</span>
+                        </h2>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide ml-1" data-i18n="ipBase">Dirección IP Base</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i data-lucide="globe" class="h-4 w-4 text-gray-400 group-focus-within:text-primary-500 transition-colors"></i>
+                                </div>
+                                <input type="text" id="ipBase" value="192.168.1.0" class="block w-full pl-10 pr-3 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none text-sm font-mono shadow-sm">
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide ml-1" data-i18n="networkClass">Clase / CIDR Inicial</label>
+                            <select id="clase" class="block w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 appearance-none cursor-pointer text-sm outline-none">
+                                <option value="8">Clase A (/8)</option>
+                                <option value="16">Clase B (/16)</option>
+                                <option value="24" selected>Clase C (/24)</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide ml-1" data-i18n="numSubnets">Subredes</label>
+                                <input type="number" id="numSubnets" min="1" max="5000" value="4" class="block w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none shadow-sm">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide ml-1 truncate" data-i18n="hostsPerSubnet">Hosts (Opcional)</label>
+                                <input type="number" id="hostsPerSubnet" min="1" class="block w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none shadow-sm" placeholder="Auto">
+                            </div>
+                        </div>
+                        <div class="pt-2 flex gap-3">
+                            <button id="calcBtn" class="flex-1 bg-gradient-to-r from-primary-600 to-indigo-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 group">
+                                <i data-lucide="calculator" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
+                                <span data-i18n="calculate">Calcular</span>
+                            </button>
+                            <button id="clearBtn" class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 p-3.5 rounded-xl"><i data-lucide="rotate-ccw" class="w-5 h-5"></i></button>
+                        </div>
                     </div>
                 </div>
-                <div class="p-4 overflow-x-auto">
-                    <div class="flex flex-col min-w-[900px]">
-                        <div id="powersRow" class="flex text-[9px] text-gray-500 mb-1"></div>
-                        <div id="notationRow" class="flex text-[8px] text-gray-400 mb-2"></div>
-                        <div id="binaryRow" class="flex gap-px"></div>
+
+                <div id="resultSummaryCard" class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 hidden fade-in">
+                    <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4" data-i18n="calculationSummary">Resumen de Cálculo</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-xl border border-emerald-100 dark:border-emerald-800/30">
+                                <span class="text-xs text-emerald-600 dark:text-emerald-400 font-medium block mb-1" data-i18n="networkJump">Salto de Red (Bloque)</span>
+                                <span id="valNetworkJump" class="text-lg font-mono font-bold text-emerald-700 dark:text-emerald-300">-</span>
+                            </div>
+                            <div class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-xl border border-indigo-100 dark:border-indigo-800/30">
+                                <span class="text-xs text-indigo-600 dark:text-indigo-400 font-medium block mb-1" data-i18n="maxHosts">Hosts Útiles</span>
+                                <span id="valMaxHosts" class="text-lg font-mono font-bold text-indigo-700 dark:text-indigo-300">-</span>
+                            </div>
+                        </div>
+                        <div class="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-xl border border-primary-100 dark:border-primary-800/30">
+                            <span class="text-xs text-primary-600 dark:text-primary-400 font-medium block mb-1" data-i18n="resultMask">Nueva Máscara</span>
+                            <span id="valResultMask" class="text-base sm:text-lg font-mono font-bold text-primary-700 dark:text-primary-300">-</span>
+                        </div>
                     </div>
+                </div>
+
+                <div class="text-center">
+                    <a href="https://www.amazon.com/author/srgurem" target="_blank" class="text-xs text-gray-500 hover:text-primary-600">By Jose C. Sierra <i data-lucide="external-link" class="w-3 h-3 inline"></i></a>
                 </div>
             </div>
 
-            <div id="tableCard" class="bg-white dark:bg-dark-800 rounded-2xl border border-gray-700 overflow-hidden hidden">
-                <div class="p-4 border-b border-gray-700 bg-gray-800/50">
-                    <h3 class="font-semibold text-sm">Tabla de Direccionamiento</h3>
+            <div class="lg:col-span-8 space-y-6">
+                <div id="emptyState" class="flex flex-col items-center justify-center h-64 bg-white dark:bg-dark-800 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 text-center p-6">
+                    <i data-lucide="activity" class="w-8 h-8 text-gray-400 mb-4"></i>
+                    <h3 class="text-gray-900 dark:text-white font-medium" data-i18n="readyToCalc">Listo para calcular</h3>
+                    <p class="text-sm text-gray-500" data-i18n="instruction">Ingresa parámetros y presiona calcular.</p>
                 </div>
-                <div class="overflow-auto max-h-[500px]">
-                    <table class="w-full text-left text-xs">
-                        <thead class="bg-gray-900 sticky top-0">
-                            <tr>
-                                <th class="p-4 uppercase text-gray-500">#</th>
-                                <th class="p-4 uppercase text-gray-500">Subred ID</th>
-                                <th class="p-4 uppercase text-gray-500">Rango Útil</th>
-                                <th class="p-4 uppercase text-gray-500">Broadcast</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody" class="divide-y divide-gray-800"></tbody>
-                    </table>
+
+                <div id="resultsArea" class="hidden space-y-6 fade-in">
+                    <div id="binaryCard" class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 flex justify-between items-center">
+                            <h3 class="font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                                <i data-lucide="binary" class="w-4 h-4 text-indigo-500"></i>
+                                <span data-i18n="binaryRepresentation">Análisis Binario</span>
+                            </h3>
+                            <button id="downloadBinaryBtn" class="text-gray-400 hover:text-indigo-500"><i data-lucide="image-down" class="w-5 h-5"></i></button>
+                        </div>
+                        <div class="p-6 overflow-x-auto">
+                            <table class="w-full min-w-[800px] border-collapse" id="processTable24Bit">
+                                <thead class="bg-gray-50 dark:bg-gray-900/50 text-xs text-gray-500 font-mono">
+                                    <tr id="powersOf2Row"></tr>
+                                    <tr id="pNotationRow"></tr>
+                                </thead>
+                                <tbody class="font-mono text-sm text-center">
+                                    <tr id="binaryMaskRow" class="text-gray-800 dark:text-gray-200 font-bold border-t border-gray-200 dark:border-gray-700"></tr>
+                                </tbody>
+                            </table>
+                            <div class="mt-4 flex justify-center gap-6 text-[10px] font-semibold uppercase tracking-wider">
+                                <div class="flex items-center gap-2"><span class="w-3 h-3 bg-gray-300 dark:bg-gray-600 rounded"></span> Red (Base)</div>
+                                <div class="flex items-center gap-2"><span class="w-3 h-3 bg-primary-500 rounded"></span> Subred (Bits Prestados)</div>
+                                <div class="flex items-center gap-2"><span class="w-3 h-3 bg-amber-400 rounded"></span> Host (Espacio Libre)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tableCard" class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 flex flex-col h-[600px]">
+                        <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 flex justify-between items-center">
+                            <h3 class="font-semibold text-gray-800 dark:text-gray-200" data-i18n="results">Tabla de Subredes</h3>
+                            <span id="recordCount" class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-500 font-mono">0</span>
+                        </div>
+                        <div class="flex-grow overflow-auto" id="tableWrap">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-gray-50 dark:bg-gray-900/50 sticky top-0 z-10 shadow-sm backdrop-blur-sm">
+                                    <tr>
+                                        <th class="p-4 text-xs font-semibold text-gray-500 uppercase text-center">#</th>
+                                        <th class="p-4 text-xs font-semibold text-gray-500 uppercase" data-i18n="subnet">Subred</th>
+                                        <th class="p-4 text-xs font-semibold text-gray-500 uppercase" data-i18n="mask">Máscara</th>
+                                        <th class="p-4 text-xs font-semibold text-gray-500 uppercase" data-i18n="range">Rango Útil</th>
+                                        <th class="p-4 text-xs font-semibold text-gray-500 uppercase" data-i18n="broadcast">Broadcast</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody" class="divide-y divide-gray-100 dark:divide-gray-700/50 font-mono text-sm"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="flex flex-col items-center">
+            <div class="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+            <p class="mt-4 text-primary-600 font-medium" data-i18n="processing">Procesando...</p>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-5 right-5 z-[100] transform translate-y-20 opacity-0 transition-all duration-300">
+        <div class="bg-dark-800 text-white px-4 py-3 rounded-lg shadow-xl flex items-center gap-3 border border-gray-700">
+            <i data-lucide="check-circle" class="text-green-400 w-5 h-5"></i>
+            <span id="toastMsg" class="text-sm font-medium">Operación Exitosa</span>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <script>
         const IPService = {
             toLong: (ip) => ip.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0,
             fromLong: (long) => [24, 16, 8, 0].map(s => (long >>> s) & 0xFF).join('.'),
+            isValid: (ip) => /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip),
             calculateMask: (cidr) => {
-                let mask = [];
-                for(let i=0; i<4; i++) {
-                    let bits = Math.min(8, Math.max(0, cidr - (i*8)));
-                    mask.push(bits === 0 ? 0 : 256 - Math.pow(2, 8-bits));
-                }
-                return mask.join('.');
+                return [0, 1, 2, 3].map(i => {
+                    let bits = Math.min(8, Math.max(0, cidr - (i * 8)));
+                    return bits === 0 ? 0 : 256 - Math.pow(2, 8 - bits);
+                }).join('.');
+            },
+            getJump: (cidr) => {
+                const octetIndex = Math.floor((cidr - 1) / 8);
+                const bitsInOctet = cidr - (octetIndex * 8);
+                return Math.pow(2, 8 - bitsInOctet);
             }
+        };
+
+        const TRANSLATIONS = {
+            es: { calculationSummary: "Resumen", networkJump: "Salto", maxHosts: "Hosts", resultMask: "Máscara CIDR", successCalc: "Cálculo OK", downloadImg: "Imagen Guardada" },
+            en: { calculationSummary: "Summary", networkJump: "Jump", maxHosts: "Hosts", resultMask: "CIDR Mask", successCalc: "Calc OK", downloadImg: "Image Saved" }
         };
 
         class SubnettingUI {
             constructor() {
+                this.currentLang = 'es';
                 this.init();
             }
 
+            el(id) { return document.getElementById(id); }
+
             init() {
                 lucide.createIcons();
-                document.getElementById('calcBtn').onclick = () => this.calculate();
+                this.bindEvents();
             }
 
-            calculate() {
-                const ip = document.getElementById('ipBase').value;
-                const baseCidr = parseInt(document.getElementById('clase').value);
-                const subnetsReq = parseInt(document.getElementById('numSubnets').value);
-                const hostsReq = parseInt(document.getElementById('hostsPerSubnet').value);
+            bindEvents() {
+                this.el('calcBtn').addEventListener('click', () => this.handleCalculate());
+                this.el('clearBtn').addEventListener('click', () => this.handleClear());
+                this.el('darkModeToggle').addEventListener('click', () => document.documentElement.classList.toggle('dark'));
+            }
 
-                const bitsSub = Math.ceil(Math.log2(subnetsReq));
-                const bitsHost = Math.ceil(Math.log2(hostsReq + 2));
+            handleCalculate() {
+                const overlay = this.el('loadingOverlay');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                setTimeout(() => {
+                    try {
+                        this.process();
+                    } catch (e) {
+                        alert(e.message);
+                    } finally {
+                        overlay.classList.add('opacity-0');
+                        setTimeout(() => overlay.classList.add('hidden'), 300);
+                    }
+                }, 400);
+            }
+
+            process() {
+                const ipStr = this.el('ipBase').value;
+                if (!IPService.isValid(ipStr)) throw new Error("IP Inválida");
+
+                const baseCidr = parseInt(this.el('clase').value);
+                const reqSubnets = parseInt(this.el('numSubnets').value);
+                const reqHostsInput = this.el('hostsPerSubnet').value;
+                const reqHosts = reqHostsInput ? parseInt(reqHostsInput) : null;
+
+                // Cálculo de bits necesarios (Independientes)
+                const bitsForSubnets = Math.ceil(Math.log2(reqSubnets));
+                let bitsForHosts = 0;
+                if (reqHosts) bitsForHosts = Math.ceil(Math.log2(reqHosts + 2));
+
+                // CIDR Final (prioriza hosts si es más restrictivo)
+                let targetCidr = baseCidr + bitsForSubnets;
+                if (reqHosts && (32 - bitsForHosts) < targetCidr) {
+                    targetCidr = 32 - bitsForHosts;
+                }
                 
-                // Cálculo de Máscara: /16 (Base) + 5 (Subred) = /21. 
-                // Verificamos que queden 11 bits para hosts (32-21=11). 
-                let finalCidr = baseCidr + bitsSub;
-                if ((32 - finalCidr) < bitsHost) finalCidr = 32 - bitsHost;
+                if (targetCidr > 31) throw new Error("Excede límite IPv4");
 
-                this.render(baseCidr, bitsSub, finalCidr, IPService.toLong(ip), subnetsReq);
+                this.render(baseCidr, bitsForSubnets, targetCidr, reqSubnets, IPService.toLong(ipStr));
             }
 
-            render(base, sub, target, ipLong, qty) {
-                const blockSize = Math.pow(2, 32 - target);
-                document.getElementById('valResultMask').textContent = `/${target} (${IPService.calculateMask(target)})`;
-                document.getElementById('valMaxHosts').textContent = (blockSize - 2).toLocaleString();
-                document.getElementById('valNetworkJump').textContent = Math.pow(2, 8 - (target % 8 || 8));
+            render(baseCidr, bitsForSubnets, targetCidr, numSubnets, baseIpLong) {
+                const hostBits = 32 - targetCidr;
+                const blockSize = Math.pow(2, hostBits);
+                const maskStr = IPService.calculateMask(targetCidr);
+                
+                this.el('valResultMask').textContent = `/${targetCidr} (${maskStr})`;
+                this.el('valMaxHosts').textContent = (Math.pow(2, hostBits) - 2).toLocaleString();
+                this.el('valNetworkJump').textContent = IPService.getJump(targetCidr);
 
-                document.getElementById('resultSummaryCard').classList.remove('hidden');
-                document.getElementById('binaryCard').classList.remove('hidden');
-                document.getElementById('tableCard').classList.remove('hidden');
+                this.el('emptyState').classList.add('hidden');
+                this.el('resultSummaryCard').classList.remove('hidden');
+                this.el('resultsArea').classList.remove('hidden');
 
-                this.renderBinary(base, sub, target);
-                this.renderTable(ipLong, blockSize, qty);
-            }
-
-            renderBinary(base, sub, target) {
-                const pRow = document.getElementById('powersRow');
-                const nRow = document.getElementById('notationRow');
-                const bRow = document.getElementById('binaryRow');
-                pRow.innerHTML = ''; nRow.innerHTML = ''; bRow.innerHTML = '';
-
-                // Mostramos 3 octetos (bits 8 al 31)
-                for (let i = 23; i >= 0; i--) {
-                    const pos = 32 - i;
-                    const isOctet = (i === 15 || i === 7);
-                    
-                    // Colores corregidos
-                    let color = "bg-amber-500/20 text-amber-500"; // Host (0s)
-                    if (pos <= base) color = "bg-gray-700 text-gray-400"; // Red Base
-                    else if (pos <= (base + sub)) color = "bg-primary-500 text-white"; // Subred Prestada
-                    else if (pos <= target) color = "bg-primary-800 text-primary-300"; // Bits extra por host requirement
-
-                    const cellBase = `binary-cell text-center p-1 border-r border-dark-900`;
-                    
-                    pRow.innerHTML += `<div class="${cellBase}">${Math.pow(2, i).toLocaleString()}</div>`;
-                    nRow.innerHTML += `<div class="${cellBase}">2^${i}</div>`;
-                    bRow.innerHTML += `<div class="${cellBase} ${color} font-bold py-2">${pos <= target ? '1' : '0'}</div>`;
-                }
-            }
-
-            renderTable(ip, block, qty) {
-                const tbody = document.getElementById('tbody');
+                // Render Tabla
+                const tbody = this.el('tbody');
                 tbody.innerHTML = '';
-                for(let i=0; i < Math.min(qty, 100); i++) {
-                    const start = (ip + (i * block)) >>> 0;
-                    const end = (start + block - 1) >>> 0;
-                    tbody.innerHTML += `<tr><td class="p-4">${i+1}</td><td class="p-4 font-bold text-primary-500">${IPService.fromLong(start)}</td><td class="p-4">${IPService.fromLong(start+1)} - ${IPService.fromLong(end-1)}</td><td class="p-4 text-gray-500">${IPService.fromLong(end)}</td></tr>`;
+                const limit = Math.min(numSubnets, 1000);
+                this.el('recordCount').textContent = limit;
+
+                for(let i=0; i<limit; i++) {
+                    const net = (baseIpLong + (i * blockSize)) >>> 0;
+                    const broad = (net + blockSize - 1) >>> 0;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td class="p-3 text-center">${i+1}</td><td class="p-3 font-bold text-primary-600">${IPService.fromLong(net)}</td><td class="p-3">${maskStr}</td><td class="p-3 text-xs">${IPService.fromLong(net+1)} - ${IPService.fromLong(broad-1)}</td><td class="p-3 text-gray-500">${IPService.fromLong(broad)}</td>`;
+                    tbody.appendChild(tr);
                 }
+
+                this.renderBinary(baseCidr, bitsForSubnets, targetCidr);
+            }
+
+            renderBinary(baseCidr, bitsSubnet, targetCidr) {
+                const powersRow = this.el('powersOf2Row');
+                const notationRow = this.el('pNotationRow');
+                const binaryRow = this.el('binaryMaskRow');
+                powersRow.innerHTML = ''; notationRow.innerHTML = ''; binaryRow.innerHTML = '';
+
+                // El análisis binario cubre los últimos 3 octetos (24 bits) para visualización
+                for (let i = 23; i >= 0; i--) {
+                    const bitGlobalPos = 32 - i; // Posición CIDR del bit actual
+                    const isOctetBoundary = (i === 15 || i === 7);
+                    
+                    // Lógica de "Corte" solicitada: El borde va al finalizar los bits de subred solicitados
+                    const isSubnetCut = bitGlobalPos === (baseCidr + bitsSubnet);
+                    const borderClass = `border-l ${isOctetBoundary ? 'border-gray-400 dark:border-gray-500' : 'border-transparent'} ${isSubnetCut ? 'border-r-4 border-r-primary-500' : ''}`;
+                    
+                    // Determinar tipo de bit para el color
+                    let bgClass = "text-amber-500 bg-amber-50/30"; // Host por defecto
+                    if (bitGlobalPos <= baseCidr) {
+                        bgClass = "text-gray-400 bg-gray-100 dark:bg-gray-800"; // Red Base
+                    } else if (bitGlobalPos <= (baseCidr + bitsSubnet)) {
+                        bgClass = "text-white bg-primary-500"; // Subred Solicitada
+                    } else if (bitGlobalPos <= targetCidr) {
+                        bgClass = "text-primary-700 bg-primary-100"; // Bits adicionales por hosts
+                    }
+
+                    powersRow.appendChild(this.createCell('th', Math.pow(2, i).toLocaleString(), `p-1 font-normal text-gray-400 ${borderClass}`));
+                    notationRow.appendChild(this.createCell('th', `2^${i}`, `p-1 text-[9px] text-gray-400 ${borderClass}`));
+                    
+                    const bitVal = bitGlobalPos <= targetCidr ? "1" : "0";
+                    binaryRow.appendChild(this.createCell('td', bitVal, `p-2 ${bgClass} ${borderClass}`));
+                }
+            }
+
+            createCell(tag, text, cls) {
+                const c = document.createElement(tag);
+                c.className = cls;
+                c.textContent = text;
+                return c;
+            }
+
+            handleClear() {
+                location.reload();
             }
         }
 
-        window.App = new SubnettingUI();
+        document.addEventListener('DOMContentLoaded', () => window.App = new SubnettingUI());
     </script>
 </body>
 </html>
