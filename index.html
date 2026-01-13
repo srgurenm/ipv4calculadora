@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--V2.0.8-->
+<!--2.0.8-->
 <html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -127,18 +127,18 @@
                     <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4" data-i18n="calculationSummary">Resumen de Cálculo</h3>
                     <div class="grid grid-cols-1 gap-4">
                         <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-xl border border-primary-100 dark:border-primary-800/30">
-                                <span class="text-xs text-primary-600 dark:text-primary-400 font-medium block mb-1" data-i18n="resultMask">Nueva Máscara</span>
-                                <span id="valResultMask" class="text-sm sm:text-lg font-mono font-bold text-primary-700 dark:text-primary-300">-</span>
+                            <div class="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-xl border border-emerald-100 dark:border-emerald-800/30">
+                                <span class="text-xs text-emerald-600 dark:text-emerald-400 font-medium block mb-1" data-i18n="networkJump">Salto de Red (Bloque)</span>
+                                <span id="valNetworkJump" class="text-lg font-mono font-bold text-emerald-700 dark:text-emerald-300">-</span>
                             </div>
                             <div class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-xl border border-indigo-100 dark:border-indigo-800/30">
                                 <span class="text-xs text-indigo-600 dark:text-indigo-400 font-medium block mb-1" data-i18n="maxHosts">Hosts Útiles</span>
                                 <span id="valMaxHosts" class="text-lg font-mono font-bold text-indigo-700 dark:text-indigo-300">-</span>
                             </div>
                         </div>
-                        <div class="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-xl border border-emerald-100 dark:border-emerald-800/30">
-                            <span class="text-xs text-emerald-600 dark:text-emerald-400 font-medium block mb-1" data-i18n="networkJump">Salto de Red (Bloque)</span>
-                            <span id="valNetworkJump" class="text-lg font-mono font-bold text-emerald-700 dark:text-emerald-300">-</span>
+                        <div class="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-xl border border-primary-100 dark:border-primary-800/30">
+                            <span class="text-xs text-primary-600 dark:text-primary-400 font-medium block mb-1" data-i18n="resultMask">Nueva Máscara</span>
+                            <span id="valResultMask" class="text-base sm:text-lg font-mono font-bold text-primary-700 dark:text-primary-300">-</span>
                         </div>
                     </div>
                 </div>
@@ -235,7 +235,6 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <script>
-        // Lógica de IPs
         const IPService = {
             toLong: (ip) => ip.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0,
             fromLong: (long) => [24, 16, 8, 0].map(s => (long >>> s) & 0xFF).join('.'),
@@ -248,14 +247,12 @@
             }
         };
 
-        // Ajustes fijos
         const CONFIG = {
             MAX_SUBRETS_DISPLAY: 5000,
             TRANSITION_DELAY: 300,
             UI_UPDATE_DELAY: 500
         };
 
-        // Textos
         const TRANSLATIONS = {
             es: {
                 subnetParameters: "Configuración",
@@ -270,7 +267,7 @@
                 calculationSummary: "Resumen de Cálculo",
                 readyToCalc: "Listo para calcular",
                 instruction: "Define tus requerimientos y obtén tu esquema de direccionamiento al instante.",
-                binaryRepresentation: "Análisis Binario (Método Oscar G.)",
+                binaryRepresentation: "Análisis Binario",
                 results: "Tabla de Subredes",
                 subnet: "ID Red",
                 mask: "Máscara",
@@ -311,7 +308,6 @@
             }
         };
 
-        // Manejo de la pantalla
         class SubnettingUI {
             constructor() {
                 this.currentLang = localStorage.getItem('lang') || 'es';
@@ -324,14 +320,12 @@
             el(id) { return document.getElementById(id); }
             initIcons() { lucide.createIcons(); }
 
-            // Cargar tema
             setupTheme() {
                 const userTheme = localStorage.getItem('theme');
                 const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                 document.documentElement.classList.toggle('dark', userTheme === 'dark' || (!userTheme && systemDark));
             }
 
-            // listeners
             bindEvents() {
                 this.el('calcBtn').addEventListener('click', () => this.handleCalculate());
                 this.el('clearBtn').addEventListener('click', () => this.handleClear());
@@ -343,7 +337,6 @@
                 this.el('downloadXlsxBtn').addEventListener('click', () => this.exportToExcel());
             }
 
-            // Avisos
             showToast(msg, type = 'success') {
                 const toast = this.el('toast');
                 const msgEl = this.el('toastMsg');
@@ -356,7 +349,6 @@
                 setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
             }
 
-            // validación IP
             validateIpUI() {
                 const input = this.el('ipBase');
                 const isValid = IPService.isValid(input.value);
@@ -364,7 +356,6 @@
                 input.classList.toggle('border-red-500', !isValid);
             }
 
-            // Lanzar cálculo 
             handleCalculate() {
                 const overlay = this.el('loadingOverlay');
                 overlay.classList.remove('hidden');
@@ -382,7 +373,6 @@
                 }, CONFIG.UI_UPDATE_DELAY);
             }
 
-            // Lógica principal de subredes ****
             processCalculation() {
                 const ipStr = this.el('ipBase').value;
                 if (!IPService.isValid(ipStr)) throw new Error(TRANSLATIONS[this.currentLang].errorIp);
@@ -404,14 +394,12 @@
                 this.renderResults(baseIpLong, baseCidr, targetCidr, reqSubnets);
             }
 
-            // imprimir resultados
             renderResults(baseIpLong, baseCidr, targetCidr, reqSubnets) {
                 const hostBits = 32 - targetCidr;
                 const blockSize = Math.pow(2, hostBits);
                 const hostsPerSubnet = Math.pow(2, hostBits) - 2;
                 const maskStr = IPService.calculateMask(targetCidr);
                 
-                // Actualizar resumen
                 this.el('valResultMask').textContent = `/${targetCidr} (${maskStr})`;
                 this.el('valMaxHosts').textContent = hostsPerSubnet > 0 ? hostsPerSubnet.toLocaleString() : 0;
                 this.el('valNetworkJump').textContent = blockSize.toLocaleString();
@@ -423,7 +411,6 @@
                 this.renderBinary(targetCidr);
             }
 
-            // Generar tabla
             renderTable(baseIpLong, baseCidr, targetCidr, blockSize, reqSubnets, maskStr) {
                 const tbody = this.el('tbody');
                 tbody.innerHTML = '';
@@ -441,7 +428,6 @@
                 tbody.appendChild(fragment);
             }
 
-            // HTML de cada fila
             createTableRow(index, netLong, broadcastLong, targetCidr, maskStr) {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 transition-colors group";
@@ -459,7 +445,6 @@
                 return tr;
             }
 
-            // Tabla de bits
             renderBinary(cidr) {
                 const powersRow = this.el('powersOf2Row');
                 const notationRow = this.el('pNotationRow');
@@ -483,7 +468,6 @@
                 return cell;
             }
 
-            // Resetear app
             handleClear() {
                 this.el('ipBase').value = '192.168.1.0';
                 this.el('clase').value = '24';
@@ -495,20 +479,17 @@
                 this.validateIpUI();
             }
 
-            // modo claro
             toggleDarkMode() {
                 const isDark = document.documentElement.classList.toggle('dark');
                 localStorage.setItem('theme', isDark ? 'dark' : 'light');
             }
 
-            // Cambiar idioma
             toggleLanguage() {
                 this.currentLang = this.currentLang === 'es' ? 'en' : 'es';
                 localStorage.setItem('lang', this.currentLang);
                 this.updateLanguage();
             }
 
-            // Aplicar textos
             updateLanguage() {
                 this.el('languageText').textContent = this.currentLang.toUpperCase();
                 const dict = TRANSLATIONS[this.currentLang];
@@ -519,7 +500,6 @@
                 this.el('ipBase').placeholder = this.currentLang === 'es' ? 'Ej. 192.168.1.0' : 'Ex. 192.168.1.0';
             }
 
-            // Captura de imagen
             async downloadArea(elementId, filename) {
                 const node = this.el(elementId);
                 const overlay = this.el('loadingOverlay');
@@ -539,7 +519,6 @@
                 }
             }
 
-            // Exportar Excel
             exportToExcel() {
                 const table = this.el('tableWrap').querySelector('table');
                 if (!table) return;
@@ -549,7 +528,6 @@
             }
         }
 
-        // Arrancar todo
         document.addEventListener('DOMContentLoaded', () => {
             window.App = new SubnettingUI();
         });
