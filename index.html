@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Subnetting Pro 2.0</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Configuración de Tailwind -->
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -24,37 +22,27 @@
             }
         }
     </script>
-    <!-- Google  -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
-        
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .dark ::-webkit-scrollbar-thumb { background: #334155; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        
         .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        
         .glass {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
-        .dark .glass {
-            background: rgba(15, 23, 42, 0.7);
-        }
+        .dark .glass { background: rgba(15, 23, 42, 0.7); }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900 dark:bg-dark-900 dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col">
 
-    <!-- Top Navigation Bar -->
     <nav class="fixed top-0 w-full z-50 glass border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
@@ -63,9 +51,7 @@
                         <i data-lucide="network" class="w-6 h-6 text-white"></i>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-indigo-600 dark:from-primary-400 dark:to-indigo-400 truncate">
-                            Subnetting Pro
-                        </h1>
+                        <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-indigo-600 dark:from-primary-400 dark:to-indigo-400 truncate">Subnetting Pro</h1>
                         <p class="text-[10px] text-gray-500 dark:text-gray-400 font-medium tracking-wider uppercase hidden sm:block">Calculadora Avanzada IPv4</p>
                     </div>
                 </div>
@@ -83,38 +69,28 @@
         </div>
     </nav>
 
-    <!-- Main -->
     <main class="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-        
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <!-- Controls -->
             <div class="lg:col-span-4 space-y-6">
-                
-                <!-- InputCard -->
-                <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden fade-in">
+                <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden fade-in">
                     <div class="p-6 space-y-5">
                         <h2 class="text-lg font-semibold flex items-center gap-2 text-gray-800 dark:text-white mb-4">
                             <i data-lucide="sliders" class="w-5 h-5 text-primary-500"></i>
                             <span data-i18n="subnetParameters">Configuración</span>
                         </h2>
-
-                        <!-- IP Input -->
                         <div class="space-y-1.5">
                             <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide ml-1" data-i18n="ipBase">Dirección IP Base</label>
                             <div class="relative group">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i data-lucide="globe" class="h-4 w-4 text-gray-400 group-focus-within:text-primary-500 transition-colors"></i>
                                 </div>
-                                <input type="text" id="ipBase" value="192.168.1.0" class="block w-full pl-10 pr-3 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 dark:text-white font-mono placeholder-gray-400 transition-all outline-none text-sm sm:text-base shadow-sm" placeholder="192.168.0.0">
+                                <input type="text" id="ipBase" value="192.168.1.0" class="block w-full pl-10 pr-3 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none text-sm font-mono shadow-sm" placeholder="192.168.0.0">
                             </div>
                         </div>
-
-                        <!-- ClassSelect -->
                         <div class="space-y-1.5">
                             <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide ml-1" data-i18n="networkClass">Clase / CIDR Inicial</label>
                             <div class="relative">
-                                <select id="clase" class="block w-full pl-4 pr-10 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 dark:text-white appearance-none cursor-pointer text-sm sm:text-base shadow-sm outline-none">
+                                <select id="clase" class="block w-full pl-4 pr-10 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 appearance-none cursor-pointer text-sm outline-none">
                                     <option value="8">Clase A (/8)</option>
                                     <option value="16">Clase B (/16)</option>
                                     <option value="24" selected>Clase C (/24)</option>
@@ -124,22 +100,18 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Subnets, Hosts  -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="space-y-1.5">
                                 <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide ml-1" data-i18n="numSubnets">Subredes</label>
-                                <input type="number" id="numSubnets" min="1" max="5000" value="4" class="block w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white outline-none shadow-sm transition-all" placeholder="4">
+                                <input type="number" id="numSubnets" min="1" max="5000" value="4" class="block w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none shadow-sm">
                             </div>
                             <div class="space-y-1.5">
                                 <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide ml-1 truncate" data-i18n="hostsPerSubnet">Hosts (Opcional)</label>
-                                <input type="number" id="hostsPerSubnet" min="1" class="block w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white outline-none shadow-sm transition-all placeholder:text-gray-400 placeholder:text-xs" placeholder="Auto">
+                                <input type="number" id="hostsPerSubnet" min="1" class="block w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none shadow-sm" placeholder="Auto">
                             </div>
                         </div>
-
-                        
                         <div class="pt-2 flex gap-3">
-                            <button id="calcBtn" class="flex-1 bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-700 hover:to-indigo-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-primary-500/30 transform transition hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 group">
+                            <button id="calcBtn" class="flex-1 bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-700 hover:to-indigo-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transform transition hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 group">
                                 <i data-lucide="calculator" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
                                 <span data-i18n="calculate">Calcular</span>
                             </button>
@@ -150,7 +122,6 @@
                     </div>
                 </div>
 
-                
                 <div id="resultSummaryCard" class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 hidden fade-in">
                     <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4" data-i18n="calculationSummary">Resumen de Cálculo</h3>
                     <div class="grid grid-cols-2 gap-4">
@@ -164,21 +135,15 @@
                         </div>
                     </div>
                 </div>
-
-                
                 <div class="text-center">
-                    <a href="https://www.amazon.com/author/srgurem" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-dark-800 border border-gray-200 dark:border-gray-700 text-xs text-gray-500 hover:text-primary-600 dark:hover:text-primary-400 transition-colors shadow-sm">
+                    <a href="https://www.amazon.com/author/srgurem" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-dark-800 border border-gray-200 dark:border-gray-700 text-xs text-gray-500 hover:text-primary-600 transition-colors shadow-sm">
                         <span class="font-medium">By Jose C. Sierra</span>
                         <i data-lucide="external-link" class="w-3 h-3"></i>
                     </a>
                 </div>
-
             </div>
 
-            
             <div class="lg:col-span-8 space-y-6">
-                
-                
                 <div id="emptyState" class="flex flex-col items-center justify-center h-64 bg-white dark:bg-dark-800 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 text-center p-6">
                     <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-full mb-4">
                         <i data-lucide="activity" class="w-8 h-8 text-gray-400"></i>
@@ -187,23 +152,18 @@
                     <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs" data-i18n="instruction">Ingresa los parámetros de red a la izquierda y presiona calcular.</p>
                 </div>
 
-                
                 <div id="resultsArea" class="hidden space-y-6 fade-in">
-                    
-                    
                     <div id="binaryCard" class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
                         <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 flex justify-between items-center">
                             <h3 class="font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
                                 <i data-lucide="binary" class="w-4 h-4 text-indigo-500"></i>
-                                <span data-i18n="binaryRepresentation">Método Binario (Oscar G)</span>
+                                <span data-i18n="binaryRepresentation">Análisis Binario</span>
                             </h3>
-                            <button id="downloadBinaryBtn" class="text-gray-400 hover:text-indigo-500 transition-colors" title="Descargar Imagen">
-                                <i data-lucide="image-down" class="w-5 h-5"></i>
-                            </button>
+                            <button id="downloadBinaryBtn" class="text-gray-400 hover:text-indigo-500 transition-colors"><i data-lucide="image-down" class="w-5 h-5"></i></button>
                         </div>
-                        <div class="p-6 overflow-x-auto" id="processTable24BitWrap">
+                        <div class="p-6 overflow-x-auto">
                             <table class="w-full min-w-[600px] border-collapse" id="processTable24Bit">
-                                <thead class="bg-gray-50 dark:bg-gray-900/50 text-xs uppercase text-gray-500 dark:text-gray-400 font-mono">
+                                <thead class="bg-gray-50 dark:bg-gray-900/50 text-xs uppercase text-gray-500 font-mono">
                                     <tr id="powersOf2Row"></tr>
                                     <tr id="pNotationRow"></tr>
                                 </thead>
@@ -211,14 +171,9 @@
                                     <tr id="binaryMaskRow" class="text-gray-800 dark:text-gray-200 font-bold border-t border-gray-200 dark:border-gray-700"></tr>
                                 </tbody>
                             </table>
-                            <div class="mt-3 text-xs text-center text-gray-400 flex justify-center items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-primary-500"></span> Bits de Red
-                                <span class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600 ml-2"></span> Bits de Host
-                            </div>
                         </div>
                     </div>
 
-                    <!-- resultado -->
                     <div id="tableCard" class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 flex flex-col h-[600px]">
                         <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 flex flex-col sm:flex-row justify-between items-center gap-4">
                             <div class="flex items-center gap-3">
@@ -226,43 +181,33 @@
                                     <i data-lucide="list" class="w-5 h-5"></i>
                                 </div>
                                 <h3 class="font-semibold text-gray-800 dark:text-gray-200" data-i18n="results">Tabla de Subredes</h3>
-                                <span id="recordCount" class="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-mono">0</span>
+                                <span id="recordCount" class="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 font-mono">0</span>
                             </div>
                             <div class="flex gap-2">
-                                <button id="downloadTableImgBtn" class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors shadow-sm">
-                                    <i data-lucide="image" class="w-3.5 h-3.5"></i> IMG
-                                </button>
-                                <button id="downloadXlsxBtn" class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors shadow-sm">
-                                    <i data-lucide="sheet" class="w-3.5 h-3.5"></i> Excel
-                                </button>
+                                <button id="downloadTableImgBtn" class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-200 hover:bg-gray-50 transition-colors shadow-sm"><i data-lucide="image" class="w-3.5 h-3.5"></i> IMG</button>
+                                <button id="downloadXlsxBtn" class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 hover:bg-green-100 transition-colors shadow-sm"><i data-lucide="sheet" class="w-3.5 h-3.5"></i> Excel</button>
                             </div>
                         </div>
-                        
-                        
                         <div class="flex-grow overflow-auto" id="tableWrap">
                             <table class="w-full text-left border-collapse">
                                 <thead class="bg-gray-50 dark:bg-gray-900/50 sticky top-0 z-10 shadow-sm backdrop-blur-sm">
                                     <tr>
-                                        <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">#</th>
-                                        <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider" data-i18n="subnet">Subred</th>
-                                        <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell" data-i18n="mask">Máscara</th>
-                                        <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell" data-i18n="range">Rango Útil</th>
-                                        <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider" data-i18n="broadcast">Broadcast</th>
+                                        <th class="p-4 text-xs font-semibold text-gray-500 uppercase text-center">#</th>
+                                        <th class="p-4 text-xs font-semibold text-gray-500 uppercase" data-i18n="subnet">Subred</th>
+                                        <th class="p-4 text-xs font-semibold text-gray-500 uppercase hidden sm:table-cell" data-i18n="mask">Máscara</th>
+                                        <th class="p-4 text-xs font-semibold text-gray-500 uppercase hidden md:table-cell" data-i18n="range">Rango Útil</th>
+                                        <th class="p-4 text-xs font-semibold text-gray-500 uppercase" data-i18n="broadcast">Broadcast</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tbody" class="divide-y divide-gray-100 dark:divide-gray-700/50 font-mono text-sm">
-                                    
-                                </tbody>
+                                <tbody id="tbody" class="divide-y divide-gray-100 dark:divide-gray-700/50 font-mono text-sm"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </main>
 
-    
     <div id="loadingOverlay" class="fixed inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
         <div class="flex flex-col items-center">
             <div class="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
@@ -270,7 +215,6 @@
         </div>
     </div>
 
-    <!-- Notific -->
     <div id="toast" class="fixed bottom-5 right-5 z-[100] transform translate-y-20 opacity-0 transition-all duration-300">
         <div class="bg-dark-800 text-white px-4 py-3 rounded-lg shadow-xl flex items-center gap-3 border border-gray-700">
             <i data-lucide="check-circle" class="text-green-400 w-5 h-5"></i>
@@ -278,14 +222,33 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <script>
-        
-        const translations = {
+        // Lógica de IPs
+        const IPService = {
+            toLong: (ip) => ip.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0,
+            fromLong: (long) => [24, 16, 8, 0].map(s => (long >>> s) & 0xFF).join('.'),
+            isValid: (ip) => /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip),
+            calculateMask: (cidr) => {
+                return [0, 1, 2, 3].map(i => {
+                    let bits = Math.min(8, Math.max(0, cidr - (i * 8)));
+                    return bits === 0 ? 0 : 256 - Math.pow(2, 8 - bits);
+                }).join('.');
+            }
+        };
+
+        // Ajustes fijos
+        const CONFIG = {
+            MAX_SUBRETS_DISPLAY: 5000,
+            TRANSITION_DELAY: 300,
+            UI_UPDATE_DELAY: 500
+        };
+
+        // Textos
+        const TRANSLATIONS = {
             es: {
                 subnetParameters: "Configuración",
                 ipBase: "Dirección IP Base",
@@ -336,286 +299,244 @@
             }
         };
 
-        // --- Logica ---
-        let currentLang = 'es';
-        const el = id => document.getElementById(id);
-
-        function init() {
-            lucide.createIcons();
-            
-            
-            const userTheme = localStorage.getItem('theme');
-            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (userTheme === 'dark' || (!userTheme && systemDark)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
+        // Manejo de la pantalla
+        class SubnettingUI {
+            constructor() {
+                this.currentLang = localStorage.getItem('lang') || 'es';
+                this.initIcons();
+                this.setupTheme();
+                this.bindEvents();
+                this.updateLanguage();
             }
 
-            
-            const storedLang = localStorage.getItem('lang');
-            if (storedLang) {
-                currentLang = storedLang;
-                updateLangUI();
+            el(id) { return document.getElementById(id); }
+            initIcons() { lucide.createIcons(); }
+
+            // Cargar tema guardado
+            setupTheme() {
+                const userTheme = localStorage.getItem('theme');
+                const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.classList.toggle('dark', userTheme === 'dark' || (!userTheme && systemDark));
             }
 
-            
-            validateIpInput();
-        }
-
-        
-        const ipToLong = (ip) => ip.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0;
-        const longToIp = (long) => [24, 16, 8, 0].map(s => (long >>> s) & 0xFF).join('.');
-        const isValidIp = (ip) => /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip);
-        
-        function showToast(msg, type = 'success') {
-            const toast = el('toast');
-            const msgEl = el('toastMsg');
-            msgEl.textContent = msg;
-            
-            
-            const icon = toast.querySelector('i');
-            if(type === 'error') {
-                icon.setAttribute('data-lucide', 'alert-circle');
-                icon.classList.remove('text-green-400');
-                icon.classList.add('text-red-400');
-            } else {
-                icon.setAttribute('data-lucide', 'check-circle');
-                icon.classList.remove('text-red-400');
-                icon.classList.add('text-green-400');
+            // Click listeners
+            bindEvents() {
+                this.el('calcBtn').addEventListener('click', () => this.handleCalculate());
+                this.el('clearBtn').addEventListener('click', () => this.handleClear());
+                this.el('ipBase').addEventListener('input', () => this.validateIpUI());
+                this.el('darkModeToggle').addEventListener('click', () => this.toggleDarkMode());
+                this.el('languageToggle').addEventListener('click', () => this.toggleLanguage());
+                this.el('downloadBinaryBtn').addEventListener('click', () => this.downloadArea('binaryCard', 'binary_calc.png'));
+                this.el('downloadTableImgBtn').addEventListener('click', () => this.downloadArea('tableCard', 'subnets.png'));
+                this.el('downloadXlsxBtn').addEventListener('click', () => this.exportToExcel());
             }
-            lucide.createIcons();
 
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        function validateIpInput() {
-            const input = el('ipBase');
-            if (isValidIp(input.value)) {
-                input.classList.remove('border-red-500', 'focus:ring-red-500');
-                input.classList.add('border-green-500', 'focus:ring-green-500');
-            } else {
-                input.classList.remove('border-green-500', 'focus:ring-green-500');
-                input.classList.add('border-red-500', 'focus:ring-red-500');
+            // Avisos flotantes
+            showToast(msg, type = 'success') {
+                const toast = this.el('toast');
+                const msgEl = this.el('toastMsg');
+                const icon = toast.querySelector('i');
+                msgEl.textContent = msg;
+                icon.setAttribute('data-lucide', type === 'error' ? 'alert-circle' : 'check-circle');
+                icon.className = type === 'error' ? 'text-red-400 w-5 h-5' : 'text-green-400 w-5 h-5';
+                lucide.createIcons();
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
             }
-        }
 
-        // --- Calculo ---
-        el('calcBtn').addEventListener('click', () => {
-            const overlay = el('loadingOverlay');
-            overlay.classList.remove('hidden');
-            setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+            // Color de validación IP
+            validateIpUI() {
+                const input = this.el('ipBase');
+                const isValid = IPService.isValid(input.value);
+                input.classList.toggle('border-green-500', isValid);
+                input.classList.toggle('border-red-500', !isValid);
+            }
 
-            
-            setTimeout(() => {
-                try {
-                    performCalculation();
-                    showToast(translations[currentLang].successCalc);
-                } catch (e) {
-                    showToast(e.message, 'error');
-                } finally {
-                    overlay.classList.add('opacity-0');
-                    setTimeout(() => overlay.classList.add('hidden'), 300);
+            // Lanzar cálculo con delay visual
+            handleCalculate() {
+                const overlay = this.el('loadingOverlay');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                setTimeout(() => {
+                    try {
+                        this.processCalculation();
+                        this.showToast(TRANSLATIONS[this.currentLang].successCalc);
+                    } catch (e) {
+                        this.showToast(e.message, 'error');
+                    } finally {
+                        overlay.classList.add('opacity-0');
+                        setTimeout(() => overlay.classList.add('hidden'), CONFIG.TRANSITION_DELAY);
+                    }
+                }, CONFIG.UI_UPDATE_DELAY);
+            }
+
+            // Lógica principal de subredes
+            processCalculation() {
+                const ipStr = this.el('ipBase').value;
+                if (!IPService.isValid(ipStr)) throw new Error(TRANSLATIONS[this.currentLang].errorIp);
+                const baseIpLong = IPService.toLong(ipStr);
+                const baseCidr = parseInt(this.el('clase').value);
+                const reqSubnets = parseInt(this.el('numSubnets').value);
+                const reqHosts = this.el('hostsPerSubnet').value ? parseInt(this.el('hostsPerSubnet').value) : null;
+                const bitsForSubnets = Math.ceil(Math.log2(reqSubnets));
+                let targetCidr = baseCidr + bitsForSubnets;
+                if (reqHosts !== null) {
+                    const bitsForHosts = Math.ceil(Math.log2(reqHosts + 2));
+                    const cidrFromHosts = 32 - bitsForHosts;
+                    if (baseCidr + bitsForSubnets + bitsForHosts > 32) throw new Error(TRANSLATIONS[this.currentLang].errorParams);
+                    targetCidr = cidrFromHosts;
+                } else {
+                    targetCidr = Math.min(30, targetCidr);
+                    if (targetCidr > 32) throw new Error(TRANSLATIONS[this.currentLang].errorParams);
                 }
-            }, 500);
-        });
-
-        function performCalculation() {
-            const ipStr = el('ipBase').value;
-            if (!isValidIp(ipStr)) throw new Error(translations[currentLang].errorIp);
-            
-            const baseIpLong = ipToLong(ipStr);
-            const baseCidr = parseInt(el('clase').value);
-            const reqSubnets = parseInt(el('numSubnets').value);
-            const reqHostsStr = el('hostsPerSubnet').value;
-            const reqHosts = reqHostsStr ? parseInt(reqHostsStr) : null;
-
-            //LogicaM
-            const bitsForSubnets = Math.ceil(Math.log2(reqSubnets));
-            let targetCidr = baseCidr + bitsForSubnets;
-
-            if (reqHosts !== null) {
-                const bitsForHosts = Math.ceil(Math.log2(reqHosts + 2));
-                const cidrFromHosts = 32 - bitsForHosts;
-                if (baseCidr + bitsForSubnets + bitsForHosts > 32) throw new Error(translations[currentLang].errorParams);
-                if (cidrFromHosts < targetCidr) { /* Host priority check ok */ }
-                targetCidr = cidrFromHosts; // Prioritize host fit
-            } else {
-                if (targetCidr > 30) targetCidr = 30;
-                if (targetCidr > 32) throw new Error(translations[currentLang].errorParams);
+                this.renderResults(baseIpLong, baseCidr, targetCidr, reqSubnets);
             }
 
-            // resultados
-            const hostBits = 32 - targetCidr;
-            const blockSize = Math.pow(2, hostBits);
-            const hostsPerSubnet = Math.pow(2, hostBits) - 2;
-            const maskStr = [0,1,2,3].map(i => {
-                let bits = Math.min(8, Math.max(0, targetCidr - (i*8)));
-                return bits === 0 ? 0 : 256 - Math.pow(2, 8-bits);
-            }).join('.');
+            // Pintar resultados en pantalla
+            renderResults(baseIpLong, baseCidr, targetCidr, reqSubnets) {
+                const hostBits = 32 - targetCidr;
+                const blockSize = Math.pow(2, hostBits);
+                const hostsPerSubnet = Math.pow(2, hostBits) - 2;
+                const maskStr = IPService.calculateMask(targetCidr);
+                this.el('valResultMask').textContent = `/${targetCidr} (${maskStr})`;
+                this.el('valMaxHosts').textContent = hostsPerSubnet > 0 ? hostsPerSubnet.toLocaleString() : 0;
+                this.el('emptyState').classList.add('hidden');
+                this.el('resultSummaryCard').classList.remove('hidden');
+                this.el('resultsArea').classList.remove('hidden');
+                this.renderTable(baseIpLong, baseCidr, targetCidr, blockSize, reqSubnets, maskStr);
+                this.renderBinary(targetCidr);
+            }
 
-            
-            el('valResultMask').textContent = `/${targetCidr} (${maskStr})`;
-            el('valMaxHosts').textContent = hostsPerSubnet > 0 ? hostsPerSubnet.toLocaleString() : 0;
-            
-            el('emptyState').classList.add('hidden');
-            el('resultSummaryCard').classList.remove('hidden');
-            el('resultsArea').classList.remove('hidden');
+            // Generar filas de la tabla
+            renderTable(baseIpLong, baseCidr, targetCidr, blockSize, reqSubnets, maskStr) {
+                const tbody = this.el('tbody');
+                tbody.innerHTML = '';
+                const baseMask = ~((1 << (32 - baseCidr)) - 1) >>> 0;
+                const networkStart = baseIpLong & baseMask;
+                const limit = Math.min(reqSubnets, CONFIG.MAX_SUBRETS_DISPLAY);
+                this.el('recordCount').textContent = limit.toLocaleString();
+                const fragment = document.createDocumentFragment();
+                for (let i = 0; i < limit; i++) {
+                    const netLong = (networkStart + (i * blockSize)) >>> 0;
+                    const broadcastLong = (netLong + blockSize - 1) >>> 0;
+                    if (broadcastLong > 0xFFFFFFFF) break;
+                    fragment.appendChild(this.createTableRow(i, netLong, broadcastLong, targetCidr, maskStr));
+                }
+                tbody.appendChild(fragment);
+            }
 
-            //tabla
-            const tbody = el('tbody');
-            tbody.innerHTML = '';
-            
-            
-            const baseMask = ~((1 << (32 - baseCidr)) - 1) >>> 0;
-            const networkStart = baseIpLong & baseMask;
-            
-            const limit = Math.min(reqSubnets, 5000);
-            el('recordCount').textContent = limit.toLocaleString();
-
-            const fragment = document.createDocumentFragment();
-            
-            for (let i = 0; i < limit; i++) {
-                const netLong = (networkStart + (i * blockSize)) >>> 0;
-                const broadcastLong = (netLong + blockSize - 1) >>> 0;
-                if (broadcastLong > 0xFFFFFFFF) break;
-
+            // HTML de cada fila
+            createTableRow(index, netLong, broadcastLong, targetCidr, maskStr) {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 transition-colors group";
                 tr.innerHTML = `
-                    <td class="p-4 text-center text-gray-400 text-xs font-mono">${i + 1}</td>
-                    <td class="p-4 font-bold text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-700 dark:group-hover:text-indigo-300">
-                        ${longToIp(netLong)}<span class="text-gray-400 text-xs font-normal">/${targetCidr}</span>
+                    <td class="p-4 text-center text-gray-400 text-xs font-mono">${index + 1}</td>
+                    <td class="p-4 font-bold text-indigo-600 dark:text-indigo-400">
+                        ${IPService.fromLong(netLong)}<span class="text-gray-400 text-xs font-normal">/${targetCidr}</span>
                     </td>
                     <td class="p-4 text-gray-600 dark:text-gray-300 hidden sm:table-cell">${maskStr}</td>
-                    <td class="p-4 text-gray-600 dark:text-gray-300 text-xs sm:text-sm hidden md:table-cell">
-                        ${longToIp(netLong + 1)} - ${longToIp(broadcastLong - 1)}
+                    <td class="p-4 text-gray-600 dark:text-gray-300 text-xs hidden md:table-cell">
+                        ${IPService.fromLong(netLong + 1)} - ${IPService.fromLong(broadcastLong - 1)}
                     </td>
-                    <td class="p-4 text-gray-500 dark:text-gray-400 text-xs sm:text-sm">
-                        ${longToIp(broadcastLong)}
-                    </td>
+                    <td class="p-4 text-gray-500 dark:text-gray-400 text-xs">${IPService.fromLong(broadcastLong)}</td>
                 `;
-                fragment.appendChild(tr);
+                return tr;
             }
-            tbody.appendChild(fragment);
 
-            
-            renderBinaryTable(targetCidr);
+            // Tabla de bits
+            renderBinary(cidr) {
+                const powersRow = this.el('powersOf2Row');
+                const notationRow = this.el('pNotationRow');
+                const binaryRow = this.el('binaryMaskRow');
+                powersRow.innerHTML = ''; notationRow.innerHTML = ''; binaryRow.innerHTML = '';
+                for (let i = 23; i >= 0; i--) {
+                    const isOctetBoundary = (i === 15 || i === 7);
+                    const borderClass = isOctetBoundary ? "border-l-2 border-primary-500 pl-1" : "";
+                    const bitValue = (23-i) < (cidr - 8) ? "1" : "0";
+                    powersRow.appendChild(this.createCell('th', Math.pow(2, i % 8), `p-1 text-center font-normal text-gray-400 ${borderClass}`));
+                    notationRow.appendChild(this.createCell('th', `2^${i % 8}`, `p-1 text-center text-[10px] text-gray-300 dark:text-gray-600 ${borderClass}`));
+                    const tdClass = `p-1 text-center ${borderClass} ${bitValue === "1" ? 'text-primary-600 bg-primary-50 dark:bg-primary-900/20' : 'text-gray-400'}`;
+                    binaryRow.appendChild(this.createCell('td', bitValue, tdClass));
+                }
+            }
+
+            createCell(tag, text, className) {
+                const cell = document.createElement(tag);
+                cell.className = className;
+                cell.textContent = text;
+                return cell;
+            }
+
+            // Resetear app
+            handleClear() {
+                this.el('ipBase').value = '192.168.1.0';
+                this.el('clase').value = '24';
+                this.el('numSubnets').value = '4';
+                this.el('hostsPerSubnet').value = '';
+                this.el('resultsArea').classList.add('hidden');
+                this.el('resultSummaryCard').classList.add('hidden');
+                this.el('emptyState').classList.remove('hidden');
+                this.validateIpUI();
+            }
+
+            // Cambiar tema
+            toggleDarkMode() {
+                const isDark = document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            }
+
+            // Cambiar idioma
+            toggleLanguage() {
+                this.currentLang = this.currentLang === 'es' ? 'en' : 'es';
+                localStorage.setItem('lang', this.currentLang);
+                this.updateLanguage();
+            }
+
+            // Aplicar textos
+            updateLanguage() {
+                this.el('languageText').textContent = this.currentLang.toUpperCase();
+                const dict = TRANSLATIONS[this.currentLang];
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (dict[key]) el.textContent = dict[key];
+                });
+                this.el('ipBase').placeholder = this.currentLang === 'es' ? 'Ej. 192.168.1.0' : 'Ex. 192.168.1.0';
+            }
+
+            // Captura de imagen
+            async downloadArea(elementId, filename) {
+                const node = this.el(elementId);
+                const overlay = this.el('loadingOverlay');
+                overlay.classList.remove('hidden', 'opacity-0');
+                try {
+                    const canvas = await html2canvas(node, { 
+                        scale: 2, 
+                        backgroundColor: document.documentElement.classList.contains('dark') ? '#0f172a' : '#ffffff' 
+                    });
+                    const link = document.createElement('a');
+                    link.download = filename;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    this.showToast(TRANSLATIONS[this.currentLang].downloadImg);
+                } finally {
+                    overlay.classList.add('hidden');
+                }
+            }
+
+            // Exportar Excel
+            exportToExcel() {
+                const table = this.el('tableWrap').querySelector('table');
+                if (!table) return;
+                const wb = XLSX.utils.table_to_book(table, { sheet: "Subnets" });
+                XLSX.writeFile(wb, 'subnet_calc.xlsx');
+                this.showToast(TRANSLATIONS[this.currentLang].downloadXls);
+            }
         }
 
-        function renderBinaryTable(cidr) {
-            let binaryString = "";
-            for (let i = 0; i < 24; i++) {
-                binaryString += (i < (cidr - 8)) ? "1" : "0";
-            }
-            
-            const powers = el('powersOf2Row');
-            const pNot = el('pNotationRow');
-            const binRow = el('binaryMaskRow');
-            
-            powers.innerHTML = ''; pNot.innerHTML = ''; binRow.innerHTML = '';
-            
-            for (let i = 23; i >= 0; i--) {
-                const octetBoundary = (i === 15 || i === 7);
-                const borderClass = octetBoundary ? "border-l-2 border-primary-500 pl-1" : "";
-                
-              
-                const thP = document.createElement('th');
-                thP.className = `p-1 text-center font-normal text-gray-400 ${borderClass}`;
-                thP.textContent = Math.pow(2, i % 8); // Reset power visual for readability or keep absolute? Keeping absolute as per req.
-                // Actually user requested specific format, usually standard is 128 64 32 ... 
-                thP.textContent = Math.pow(2, i);
-                powers.appendChild(thP);
-
-                
-                const thN = document.createElement('th');
-                thN.className = `p-1 text-center text-[10px] text-gray-300 dark:text-gray-600 ${borderClass}`;
-                thN.textContent = `2^${i}`;
-                pNotationRow.appendChild(thN);
-
-                
-                const td = document.createElement('td');
-                const bit = binaryString[23 - i] || "0";
-                const isOne = bit === "1";
-                td.className = `p-1 text-center ${borderClass} ${isOne ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20' : 'text-gray-400 dark:text-gray-600'}`;
-                td.textContent = bit;
-                binRow.appendChild(td);
-            }
-        }
-
-        // --- Event Listeners ---
-        el('ipBase').addEventListener('input', validateIpInput);
-        
-        el('clearBtn').addEventListener('click', () => {
-            el('ipBase').value = '192.168.1.0';
-            el('clase').value = '24';
-            el('numSubnets').value = '4';
-            el('hostsPerSubnet').value = '';
-            el('resultsArea').classList.add('hidden');
-            el('resultSummaryCard').classList.add('hidden');
-            el('emptyState').classList.remove('hidden');
-            validateIpInput();
+        // Arrancar todo
+        document.addEventListener('DOMContentLoaded', () => {
+            window.App = new SubnettingUI();
         });
-
-        // Downloads
-        async function downloadArea(elementId, filename) {
-            const node = el(elementId);
-            const overlay = el('loadingOverlay');
-            overlay.classList.remove('hidden', 'opacity-0');
-            
-            try {
-                const canvas = await html2canvas(node, { scale: 2, backgroundColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff' });
-                const link = document.createElement('a');
-                link.download = filename;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                showToast(translations[currentLang].downloadImg);
-            } catch(e) {
-                console.error(e);
-            } finally {
-                overlay.classList.add('hidden');
-            }
-        }
-
-        el('downloadBinaryBtn').addEventListener('click', () => downloadArea('binaryCard', 'binary_calc.png'));
-        el('downloadTableImgBtn').addEventListener('click', () => downloadArea('tableCard', 'subnets.png'));
-        
-        el('downloadXlsxBtn').addEventListener('click', () => {
-            const table = document.querySelector('#tableWrap table');
-            if(!table) return;
-            const wb = XLSX.utils.table_to_book(table, { sheet: "Subnets" });
-            XLSX.writeFile(wb, 'subnet_calc.xlsx');
-            showToast(translations[currentLang].downloadXls);
-        });
-
-        // UI Toggles
-        el('darkModeToggle').addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-        });
-
-        el('languageToggle').addEventListener('click', () => {
-            currentLang = currentLang === 'es' ? 'en' : 'es';
-            localStorage.setItem('lang', currentLang);
-            updateLangUI();
-        });
-
-        function updateLangUI() {
-            el('languageText').textContent = currentLang.toUpperCase();
-            const t = translations[currentLang];
-            document.querySelectorAll('[data-i18n]').forEach(elem => {
-                const key = elem.getAttribute('data-i18n');
-                if(t[key]) elem.textContent = t[key];
-            });
-            el('ipBase').placeholder = currentLang === 'es' ? 'Ej. 192.168.1.0' : 'Ex. 192.168.1.0';
-        }
-
-        
-        init();
-
     </script>
 </body>
 </html>
